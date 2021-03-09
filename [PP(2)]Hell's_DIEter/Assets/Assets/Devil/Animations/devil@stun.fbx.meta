@@ -1,0 +1,197 @@
+fileFormatVersion: 2
+guid: a3b4875ca64a71748ba492354e709a5e
+timeCreated: 1460833048
+licenseType: Store
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: arm_L_1
+    100002: arm_L_2
+    100004: arm_R_1
+    100006: arm_R_2
+    100008: body
+    100010: chest
+    100012: cloth_1
+    100014: cloth_2
+    100016: //RootNode
+    100018: ear_L
+    100020: ear_R
+    100022: eye_L
+    100024: eye_R
+    100026: finger_b
+    100028: finger_b 1
+    100030: fingers_L_1
+    100032: fingers_L_2
+    100034: fingers_L_3
+    100036: fingers_L_4
+    100038: fingers_L_5
+    100040: fingers_L_6
+    100042: fingers_R_1
+    100044: fingers_R_2
+    100046: fingers_R_3
+    100048: fingers_R_4
+    100050: fingers_R_5
+    100052: fingers_R_6
+    100054: hair_1
+    100056: hair_2
+    100058: hair_3
+    100060: hair_4
+    100062: hair_5
+    100064: hair_6
+    100066: hair_7
+    100068: hand_L
+    100070: hand_L1
+    100072: hand_R
+    100074: hand_R1
+    100076: head
+    100078: leg_L_1
+    100080: leg_L_2
+    100082: leg_L_3
+    100084: leg_R_1
+    100086: leg_R_2
+    100088: leg_R_3
+    100090: nakolennik_L
+    100092: nakolennik_R
+    100094: polySurface1
+    100096: root
+    100098: shoulder
+    100100: shoulder1
+    100102: stick
+    100104: tail_1
+    100106: tail_2
+    100108: tail_3
+    100110: wing_L_1
+    100112: wing_L_2
+    100114: wing_L_3
+    100116: wing_R_1
+    100118: wing_R_2
+    100120: wing_R_3
+    400000: arm_L_1
+    400002: arm_L_2
+    400004: arm_R_1
+    400006: arm_R_2
+    400008: body
+    400010: chest
+    400012: cloth_1
+    400014: cloth_2
+    400016: //RootNode
+    400018: ear_L
+    400020: ear_R
+    400022: eye_L
+    400024: eye_R
+    400026: finger_b
+    400028: finger_b 1
+    400030: fingers_L_1
+    400032: fingers_L_2
+    400034: fingers_L_3
+    400036: fingers_L_4
+    400038: fingers_L_5
+    400040: fingers_L_6
+    400042: fingers_R_1
+    400044: fingers_R_2
+    400046: fingers_R_3
+    400048: fingers_R_4
+    400050: fingers_R_5
+    400052: fingers_R_6
+    400054: hair_1
+    400056: hair_2
+    400058: hair_3
+    400060: hair_4
+    400062: hair_5
+    400064: hair_6
+    400066: hair_7
+    400068: hand_L
+    400070: hand_L1
+    400072: hand_R
+    400074: hand_R1
+    400076: head
+    400078: leg_L_1
+    400080: leg_L_2
+    400082: leg_L_3
+    400084: leg_R_1
+    400086: leg_R_2
+    400088: leg_R_3
+    400090: nakolennik_L
+    400092: nakolennik_R
+    400094: polySurface1
+    400096: root
+    400098: shoulder
+    400100: shoulder1
+    400102: stick
+    400104: tail_1
+    400106: tail_2
+    400108: tail_3
+    400110: wing_L_1
+    400112: wing_L_2
+    400114: wing_L_3
+    400116: wing_R_1
+    400118: wing_R_2
+    400120: wing_R_3
+    4300000: polySurface1
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: polySurface1
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
