@@ -9,9 +9,9 @@ public class ThirdPersonCamera : MonoBehaviour
     private float rotSpeed = 2.0f;
 
     private float camDistance = 0;      // 리그부터 카메라까지의 거리
-    private float camWidth = -10.0f;    // 가로 거리
+    private float camWidth = -15.0f;    // 가로 거리
     private float camHeight = 4.0f;     // 세로 거리
-    private float camFix = 3.0f;        // 레이캐스트 후 리그를 향해 올 보정 값(거리)
+    //private float camFix = 3.0f;        // 레이캐스트 후 리그를 향해 올 보정 값(거리)
 
     Vector3 direction;
     Vector3 mouseMove;

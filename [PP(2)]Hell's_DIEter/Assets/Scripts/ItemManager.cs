@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemManager : MonoBehaviour
+public class Item
 {
+    public int ID;
+    public string Name;
+    public string Dis;
+
     private enum ITEM
     {
         DUMBEL,
@@ -12,6 +16,18 @@ public class ItemManager : MonoBehaviour
         FOOD,
         TOOL
     }
+
+    public Item(int id, string name, string dis)
+    {
+        ID = id;
+        Name = name;
+        Dis = dis;
+    }
+}
+
+public class ItemManager : MonoBehaviour
+{
+    public List<Item> ItemList = new List<Item>();
     // Start is called before the first frame update
     void Start()
     {

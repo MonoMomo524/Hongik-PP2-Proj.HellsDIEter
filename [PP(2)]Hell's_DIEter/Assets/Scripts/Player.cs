@@ -8,16 +8,18 @@ public class Player : MonoBehaviour {
     private Rigidbody rb;
     private ParticleSystem particle;
 
-    [SerializeField] private bool isJetpackOn;       // 제트팩 사용 확인
+    [SerializeField] private bool isJetpackOn = false;       // 제트팩 사용 확인
+    [SerializeField] private bool isImmortal = false;       // 제트팩 사용 확인
     [SerializeField] private float fuel = 100.0f;    // 비행 연료
-    [SerializeField] private float weight = 100.0f;  // 몸무게
+    [SerializeField] private int weight = 100;  // 몸무게
+    
     [SerializeField] private float hp = 100.0f;      // 체력
     [SerializeField] private bool isGrounded;
-    private float gravity = 14.0f;
     private float moveSpeed = 5.0f;
     private float rotSpeed = 10.0f;
     private float jumpForce = 10.0f;     // 점프 힘
-    private float maximumFuel = 10;
+    private float maxFuel = 10;
+    private float maxWeight = 100.0f;  // 몸무게
 
     private void Awake()
     {
@@ -27,18 +29,27 @@ public class Player : MonoBehaviour {
     void Start () {
 		anim = gameObject.GetComponentInChildren<Animator>();
         rb = gameObject.GetComponentInParent<Rigidbody>();
-        fuel = maximumFuel;
+        fuel = maxFuel;
         particle = gameObject.GetComponentInChildren<ParticleSystem>();
     }
 
     void Update ()
     {
         MoveCharacter();
+        if (hp > 0 && hp < 100) 
+        {
+            hp += 1 * Time.deltaTime;
+        }
+
+        if (hp < 0) 
+        {
+            hp = 0;
+        }
     }
 
     private void UpgradeFuelLimits()
     {
-        maximumFuel += 5.0f;
+        maxFuel += 5.0f;
         return;
     }
 
@@ -113,12 +124,12 @@ public class Player : MonoBehaviour {
             case false:
                 anim.SetBool("UsingJetpack", false);                        // 제트팩 사용 애니메이션 중단
                 particle.Stop();                                            // 불꽃 파티클 중단
-                if (fuel < maximumFuel)                                     // 연료 회복
+                if (fuel < maxFuel)                                     // 연료 회복
                 {
                     fuel += Time.deltaTime * 0.5f;
-                    if (fuel > maximumFuel)                                 // 연료가 최대량보다 크면 최대량에 맞게 조정
+                    if (fuel > maxFuel)                                 // 연료가 최대량보다 크면 최대량에 맞게 조정
                     {
-                        fuel = maximumFuel;
+                        fuel = maxFuel;
                     }
                 }
                 break;
@@ -140,23 +151,56 @@ public class Player : MonoBehaviour {
         return;
     }
 
-    public float GetFuelInfo()
+    public float GetFuel()
     {
         return fuel;
     }
 
-    public float GetMaxFuelInfo()
+    public float GetMaxFuel()
     {
-        return maximumFuel;
+        return maxFuel;
     }
 
-    public float GetWeightInfo()
+    public int GetWeight()
     {
         return weight;
     }
 
-    public float GetHPInfo()
+    public float GetMaxWeight()
+    {
+        return maxWeight;
+    }
+
+    public float GetHP()
     {
         return hp;
+    }
+
+    public void SetHP(int damage)
+    {
+        if (isImmortal)
+            return;
+
+        hp -= damage;
+        return;
+    }
+
+    IEnumerator SetImmortalTimer()
+    {
+        int timer = 0;
+        isImmortal = true;
+        while (timer<5)
+        {
+            yield return new WaitForSeconds(1.0f);
+            timer++;
+        }
+
+        isImmortal = false;
+        yield return null;
+    }
+
+    public bool IsStateImmortal()
+    {
+        return isImmortal;
     }
 }

@@ -5,65 +5,110 @@ using UnityEngine.UI;
 
 public class UIManger : MonoBehaviour
 {
+    #region Variables
+    // 플레이어 스크립트
     private Player playerScript;
+
+    // 슬라이더(Gauge Bar)
     public Slider WeightSlider;
     public Slider HPSlider;
     public Slider FuelSlider;
+
+    // 텍스트
     private Text weightText;
     private Text hpText;
     private Text fuelText;
 
-    private float weight;
+    // 플레이어 이미지
+    public Sprite[] Avatars;
+    private Image avatar;
+
+    // 게이지 값
+    private int weight;
     private float hp;
     private float fuel;
 
-    // Start is called before the first frame update
+    // 게임 결과
+    public GameObject result;
+    #endregion
+
     void Start()
     {
-        playerScript = GameObject.Find("Player").GetComponent<Player>();
-        WeightSlider.maxValue = playerScript.GetWeightInfo();
-        HPSlider.maxValue = playerScript.GetHPInfo();
-        FuelSlider.maxValue = playerScript.GetMaxFuelInfo();
+        playerScript = GameObject.Find("Player").GetComponent<Player>();              // 플레이어 스크립트
+        weightText = WeightSlider.GetComponentInChildren<Text>();                     // 체중을 나타낼 텍스트
+        hpText = HPSlider.GetComponentInChildren<Text>();                                   // HP를 나타낼 텍스트
+        fuelText = FuelSlider.GetComponentInChildren<Text>();                              // 연료량을 나타낼 텍스트
+        avatar = HPSlider.transform.Find("IconImage").GetComponent<Image>();    // 플레이어 아바타 이미지
 
-        weightText = WeightSlider.GetComponentInChildren<Text>();
-        hpText = HPSlider.GetComponentInChildren<Text>();
-        fuelText = FuelSlider.GetComponentInChildren<Text>();
+        // 게이지에 표기할 값 가져오기
+        WeightSlider.maxValue = playerScript.GetWeight();
+        HPSlider.maxValue = playerScript.GetHP();
+        FuelSlider.maxValue = playerScript.GetMaxFuel();
+
+        // 게임오버 시 게임오버화면 표시
+        result.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // 게임오버
+        if (result.gameObject.activeSelf == true)
+            return;
+
         UpdateGauge();
+        UpdateAvatar();
+        if (result.gameObject.activeSelf==false && playerScript.GetHP() <= 0)
+        {
+            result.SetActive(true);
+        }
     }
 
+    // 게이지를 업데이트 하는 함수
     private void UpdateGauge()
     {
-        weight = playerScript.GetWeightInfo();
-        hp = playerScript.GetHPInfo();
-        fuel = playerScript.GetFuelInfo();
-
+        // 체중 게이지
+        weight = playerScript.GetWeight();
         WeightSlider.value = weight;
-        HPSlider.value = hp;
-        FuelSlider.value = fuel;
-
-        weightText.text = weight.ToString();
-        hpText.text = hp.ToString();
-        fuel = (int)fuel;
-        fuelText.text = fuel.ToString();
-
+        weightText.text = weight.ToString() + "/" + playerScript.GetMaxWeight().ToString();
         if (WeightSlider.value <= 0)
             WeightSlider.transform.Find("Fill Area").gameObject.SetActive(false);
         else
             WeightSlider.transform.Find("Fill Area").gameObject.SetActive(true);
 
+        // HP 게이지
+        hp = playerScript.GetHP();
+        HPSlider.value = hp;
+        hp = (int)hp;
+        hpText.text = hp.ToString();
         if (HPSlider.value <= 0)
             HPSlider.transform.Find("Fill Area").gameObject.SetActive(false);
         else
             HPSlider.transform.Find("Fill Area").gameObject.SetActive(true);
 
+        // 연료 게이지
+        fuel = playerScript.GetFuel();
+        FuelSlider.value = fuel;
+        fuel = (int)fuel;
+        fuelText.text = fuel.ToString() + "/" + playerScript.GetMaxFuel().ToString();
         if (FuelSlider.value <= 0)
             FuelSlider.transform.Find("Fill Area").gameObject.SetActive(false);
         else
             FuelSlider.transform.Find("Fill Area").gameObject.SetActive(true);
+    }
+
+    private void UpdateAvatar()
+    {
+        if (hp >= 70)
+        {
+            avatar.sprite = Avatars[0];
+        }
+        else if (hp < 30)
+        {
+            avatar.sprite = Avatars[2];
+        }
+        else
+        {
+            avatar.sprite = Avatars[1]; 
+        }
     }
 }
