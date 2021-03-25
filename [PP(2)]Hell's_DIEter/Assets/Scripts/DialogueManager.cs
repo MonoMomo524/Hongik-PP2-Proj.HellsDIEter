@@ -12,7 +12,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     private Queue<string> sentences;
     private string currentSentence;
 
-    private float typingSpeed = 0.1f;
+    private float typingSpeed = 0.05f;
     private bool isTyping;
 
     // 싱글톤

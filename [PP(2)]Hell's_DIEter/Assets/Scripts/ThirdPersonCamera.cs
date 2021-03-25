@@ -9,8 +9,8 @@ public class ThirdPersonCamera : MonoBehaviour
     private float rotSpeed = 2.0f;
 
     private float camDistance = 0;      // 리그부터 카메라까지의 거리
-    private float camWidth = -15.0f;    // 가로 거리
-    private float camHeight = 4.0f;     // 세로 거리
+    private float camWidth = -20.0f;    // 가로 거리
+    private float camHeight = 5.0f;     // 세로 거리
     //private float camFix = 3.0f;        // 레이캐스트 후 리그를 향해 올 보정 값(거리)
 
     Vector3 direction;
@@ -40,6 +40,24 @@ public class ThirdPersonCamera : MonoBehaviour
         transform.position = player.transform.position;
 
         transform.Translate(player.transform.position);
-        Debug.DrawRay(transform.position, new Vector3(transform.forward.x, 0f, transform.forward.z).normalized, Color.red);
+    }
+
+    public void SetDistance(int weight)
+    {
+        switch (weight)
+        {
+            case 0:
+                break;
+            case 40:
+                break;
+            case 70:
+                camWidth = -10.0f;    // 가로 거리
+                camHeight = 4.0f;     // 세로 거리
+                break;
+            case 90:
+                camWidth = -20.0f;    // 가로 거리
+                camHeight = 5.0f;     // 세로 거리
+                break;
+        }
     }
 }

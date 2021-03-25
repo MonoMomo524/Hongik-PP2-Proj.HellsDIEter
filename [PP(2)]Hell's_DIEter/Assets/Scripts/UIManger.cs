@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManger : MonoBehaviour
 {
@@ -15,17 +16,17 @@ public class UIManger : MonoBehaviour
     public Slider FuelSlider;
 
     // 텍스트
-    private Text weightText;
-    private Text hpText;
-    private Text fuelText;
+    private TextMeshProUGUI weightText;
+    private TextMeshProUGUI hpText;
+    private TextMeshProUGUI fuelText;
 
     // 플레이어 이미지
     public Sprite[] Avatars;
     private Image avatar;
 
     // 게이지 값
-    private int weight;
-    private float hp;
+    private float weight;
+    private int hp;
     private float fuel;
 
     // 게임 결과
@@ -35,9 +36,9 @@ public class UIManger : MonoBehaviour
     void Start()
     {
         playerScript = GameObject.Find("Player").GetComponent<Player>();              // 플레이어 스크립트
-        weightText = WeightSlider.GetComponentInChildren<Text>();                     // 체중을 나타낼 텍스트
-        hpText = HPSlider.GetComponentInChildren<Text>();                                   // HP를 나타낼 텍스트
-        fuelText = FuelSlider.GetComponentInChildren<Text>();                              // 연료량을 나타낼 텍스트
+        weightText = WeightSlider.GetComponentInChildren<TextMeshProUGUI>();                     // 체중을 나타낼 텍스트
+        hpText = HPSlider.GetComponentInChildren<TextMeshProUGUI>();                                   // HP를 나타낼 텍스트
+        fuelText = FuelSlider.GetComponentInChildren<TextMeshProUGUI>();                              // 연료량을 나타낼 텍스트
         avatar = HPSlider.transform.Find("IconImage").GetComponent<Image>();    // 플레이어 아바타 이미지
 
         // 게이지에 표기할 값 가져오기
@@ -69,7 +70,7 @@ public class UIManger : MonoBehaviour
         // 체중 게이지
         weight = playerScript.GetWeight();
         WeightSlider.value = weight;
-        weightText.text = weight.ToString() + "/" + playerScript.GetMaxWeight().ToString();
+        weightText.text = weight.ToString() + "/" + playerScript.GetMaxWeight().ToString() + "Kg";
         if (WeightSlider.value <= 0)
             WeightSlider.transform.Find("Fill Area").gameObject.SetActive(false);
         else
@@ -78,7 +79,6 @@ public class UIManger : MonoBehaviour
         // HP 게이지
         hp = playerScript.GetHP();
         HPSlider.value = hp;
-        hp = (int)hp;
         hpText.text = hp.ToString();
         if (HPSlider.value <= 0)
             HPSlider.transform.Find("Fill Area").gameObject.SetActive(false);

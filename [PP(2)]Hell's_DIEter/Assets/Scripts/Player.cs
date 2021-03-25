@@ -11,15 +11,19 @@ public class Player : MonoBehaviour {
     [SerializeField] private bool isJetpackOn = false;       // 제트팩 사용 확인
     [SerializeField] private bool isImmortal = false;       // 제트팩 사용 확인
     [SerializeField] private float fuel = 100.0f;    // 비행 연료
-    [SerializeField] private int weight = 100;  // 몸무게
+    [SerializeField] private float weight = 100;  // 몸무게
+    private int limit = 10;
+    private int dumCounts = 0;
     
     [SerializeField] private float hp = 100.0f;      // 체력
     [SerializeField] private bool isGrounded;
+    private bool isVisible;
     private float moveSpeed = 5.0f;
     private float rotSpeed = 10.0f;
     private float jumpForce = 10.0f;     // 점프 힘
-    private float maxFuel = 10;
-    private float maxWeight = 100.0f;  // 몸무게
+    private float maxFuel = 1.0f;
+    private int maxWeight = 100;  // 몸무게
+    private int minWeight = 100;  // 몸무게
 
     private void Awake()
     {
@@ -31,20 +35,73 @@ public class Player : MonoBehaviour {
         rb = gameObject.GetComponentInParent<Rigidbody>();
         fuel = maxFuel;
         particle = gameObject.GetComponentInChildren<ParticleSystem>();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update ()
     {
-        MoveCharacter();
-        if (hp > 0 && hp < 100) 
+        // 플레이어 체력 확인 및 회복
+        if (hp <= 0)
+        {
+            hp = 0;
+            return;
+        }
+        if (hp > 0 && hp < 100)
         {
             hp += 1 * Time.deltaTime;
         }
 
-        if (hp < 0) 
+        // 마우스 On/Off
+        if(Input.GetKeyDown(KeyCode.LeftControl))
         {
-            hp = 0;
+            if (Cursor.visible == false)
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+            else
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
+
+        // 체중 감량과 애니메이션
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (dumCounts != 0)
+            {
+                weight += -dumCounts;
+                anim.SetBool("DoingExercise", true);
+                if (weight < minWeight)
+                    weight = minWeight;
+                switch (weight)
+                {
+                    case 0:
+                        break;
+                    case 40:
+                        break;
+                    case 70:
+                        break;
+                    case 90:
+                        this.gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+                        break;
+                    case 100:
+                        this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                        break;
+                }
+
+                cam.GetComponent<ThirdPersonCamera>().SetDistance((int)weight);
+            }
+        }
+        else if (Input.GetMouseButton(1) || Input.GetMouseButtonUp(1))
+        {
+            anim.SetBool("DoingExercise", false);
+        }
+
+        MoveCharacter();    // 플레이어 이동
     }
 
     private void UpgradeFuelLimits()
@@ -151,29 +208,49 @@ public class Player : MonoBehaviour {
         return;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        // 덤벨 획득 시 감량 하한 체중 재설정
+        if(collision.gameObject.CompareTag("Dumbbell"))
+        {
+            dumCounts += 1; // 획득한 덤벨 개수 추가
+            minWeight = maxWeight - limit * dumCounts;  // 체중 하한 재설정
+            Debug.Log("Minimum weights: " + minWeight + "Kg");
+
+            Destroy(collision.gameObject);
+        }
+        // 덤벨 획득 시 감량 하한 체중 재설정
+        if (collision.gameObject.CompareTag("Food"))
+        {
+            weight = maxWeight;
+            this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+            Destroy(collision.gameObject);
+        }
+    }
+
     public float GetFuel()
     {
         return fuel;
     }
 
-    public float GetMaxFuel()
+    public int GetMaxFuel()
     {
-        return maxFuel;
+        return (int)maxFuel;
     }
 
-    public int GetWeight()
+    public float GetWeight()
     {
         return weight;
     }
 
-    public float GetMaxWeight()
+    public int GetMaxWeight()
     {
         return maxWeight;
     }
 
-    public float GetHP()
+    public int GetHP()
     {
-        return hp;
+        return (int)hp;
     }
 
     public void SetHP(int damage)
@@ -202,5 +279,10 @@ public class Player : MonoBehaviour {
     public bool IsStateImmortal()
     {
         return isImmortal;
+    }
+
+    public bool IsJetpackOn()
+    {
+        return isJetpackOn;
     }
 }
