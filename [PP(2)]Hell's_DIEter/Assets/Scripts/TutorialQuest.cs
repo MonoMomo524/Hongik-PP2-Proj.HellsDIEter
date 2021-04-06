@@ -32,18 +32,15 @@ public class TutorialQuest : MonoBehaviour
         switch (npc.level)
         {
             case 1:
-                Debug.Log("Tutorial 1");
-                if (player.IsJetpackOn())
+                if (player.IsJetpackOn)
                     done = true;
                 break;
             case 2:
-                Debug.Log("Tutorial 2");
-                if (player.GetWeight() == 90)
+                if (player.Weight == 90)
                     done = true;
                 break;
             case 3:
-                Debug.Log("Tutorial 3");
-                if (player.GetWeight() == 100)
+                if (player.Weight == 100)
                     done = true;
                 break;
         }

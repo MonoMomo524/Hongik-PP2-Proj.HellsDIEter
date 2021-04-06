@@ -3,56 +3,98 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-	private Animator anim;
+    #region Variables
+    private Animator anim;
     private Camera cam;
     private Rigidbody rb;
     private ParticleSystem particle;
+    private Color originColor;
+    public SkinnedMeshRenderer body;
 
-    [SerializeField] private bool isJetpackOn = false;       // 제트팩 사용 확인
-    [SerializeField] private bool isImmortal = false;       // 제트팩 사용 확인
-    [SerializeField] private float fuel = 100.0f;    // 비행 연료
-    [SerializeField] private float weight = 100;  // 몸무게
-    private int limit = 10;
-    private int dumCounts = 0;
-    
-    [SerializeField] private float hp = 100.0f;      // 체력
-    [SerializeField] private bool isGrounded;
-    private bool isVisible;
-    private float moveSpeed = 5.0f;
-    private float rotSpeed = 10.0f;
-    private float jumpForce = 10.0f;     // 점프 힘
-    private float maxFuel = 1.0f;
-    private int maxWeight = 100;  // 몸무게
-    private int minWeight = 100;  // 몸무게
-
-    private void Awake()
+    private bool isJetpackOn = false;       // 제트팩 사용 확인
+    public bool IsJetpackOn
     {
-        cam = Camera.main;
+        get { return isJetpackOn; }
     }
 
-    void Start () {
-		anim = gameObject.GetComponentInChildren<Animator>();
+    private bool isImmortal = false;       // 제트팩 사용 확인
+    public bool IsImmortal
+    {
+        get { return isImmortal; }
+    }
+
+    private float fuel = 100.0f;    // 비행 연료
+    public float Fuel
+    {
+        get { return fuel; }
+    }
+
+    private float maxFuel = 1.0f;   // 연료량
+    public float MaxFuel
+    {
+        get { return (int)maxFuel; }
+        set { maxFuel += value; }
+    }
+
+    private float weight = 100;  // 몸무게
+    public float Weight
+    {
+        get { return weight; }
+        set { weight += value; }
+    }
+
+    private int maxWeight = 100;  // 증량 가능 몸무게
+    public int MaxWeight
+    {
+        get { return maxWeight; }
+    }
+
+    private int minWeight = 100;  // 감량 가능 몸무게
+    public int MinWeight
+    {
+        get { return minWeight; }
+        set { minWeight -= value; }
+    }
+
+    private float hp = 100.0f;                // 체력
+    public float Hp
+    {
+        get { return (int)hp; }
+        set
+        {
+            if (isImmortal) { return; }
+            else {
+                hp -= value;
+                StartCoroutine(SetImmortalTimer());
+            }
+        }
+    }
+
+    private bool isGrounded;                 // 지면에 있는지
+    private int dumCounts = 0;              // 덤벨 개수
+    private float moveSpeed = 5.0f;     // 캐릭터 이동 속도
+    private float rotSpeed = 10.0f;      // 캐릭터 회전 속도
+    private float jumpForce = 10.0f;    // 점프 힘
+    #endregion
+
+    void Start ()
+    {
+        cam = Camera.main;
+        anim = gameObject.GetComponentInChildren<Animator>();
         rb = gameObject.GetComponentInParent<Rigidbody>();
         fuel = maxFuel;
         particle = gameObject.GetComponentInChildren<ParticleSystem>();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        EventManager.Instance.AddListener(TUTORIAL_TYPE.MOVEMENTS, OnEvent);
+
+        originColor = body.materials[1].color;
     }
 
     void Update ()
     {
-        // 플레이어 체력 확인 및 회복
-        if (hp <= 0)
-        {
-            hp = 0;
-            return;
-        }
-        if (hp > 0 && hp < 100)
-        {
-            hp += 1 * Time.deltaTime;
-        }
-
         // 마우스 On/Off
         if(Input.GetKeyDown(KeyCode.LeftControl))
         {
@@ -80,10 +122,13 @@ public class Player : MonoBehaviour {
                 switch (weight)
                 {
                     case 0:
+                        this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                         break;
                     case 40:
+                        this.gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
                         break;
                     case 70:
+                        this.gameObject.transform.localScale = new Vector3(0.95f, 0.95f, 0.95f);
                         break;
                     case 90:
                         this.gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
@@ -100,16 +145,37 @@ public class Player : MonoBehaviour {
         {
             anim.SetBool("DoingExercise", false);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        // 플레이어 체력 확인 및 회복
+        if (hp > 0 && hp < 100)
+        {
+            hp += 1 * Time.deltaTime;
+        }
 
         MoveCharacter();    // 플레이어 이동
+
+        UsingJetpack();     // 제트팩 사용 처리
     }
 
-    private void UpgradeFuelLimits()
+    #region Methods
+    public void OnEvent(TUTORIAL_TYPE eventType, bool flag)
     {
-        maxFuel += 5.0f;
-        return;
+        switch (eventType)
+        {
+            case TUTORIAL_TYPE.MOVEMENTS:
+                break;
+            case TUTORIAL_TYPE.DECREASE:
+                break;
+            case TUTORIAL_TYPE.INCREASE:
+                break;
+            default:
+                break;
+        }
     }
-
+    
     private void MoveCharacter()
     {
         Vector2 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
@@ -119,10 +185,12 @@ public class Player : MonoBehaviour {
         if (isGrounded)  // 점프중이 아님
         {
             // 에니매이션 처리
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) // Walk foward, left, right.
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))          // 앞으로, 왼쪽, 오른쪽으로 걷기
                 anim.SetInteger("WalkParam", 1);
-            else if (Input.GetKey(KeyCode.S)) // Walk backward
+
+            else if (Input.GetKey(KeyCode.S))           // 뒤로가기
                 anim.SetInteger("WalkParam", 2);
+
             else // Idle
                 anim.SetInteger("WalkParam", 0);
 
@@ -152,9 +220,9 @@ public class Player : MonoBehaviour {
                 isJetpackOn = false;
             }
         }
-        
-        UsingJetpack();     // 제트팩 사용 처리
-        
+
+        UsingJetpack();
+
         if (isMove)         // 이동 처리
         {
             Vector3 lookForward = new Vector3(cam.transform.forward.x, 0f, cam.transform.forward.z).normalized; // 전방향 확인
@@ -167,6 +235,7 @@ public class Player : MonoBehaviour {
         }
     }
 
+    // 제트팩 연산 및 애니메이션 처리
     private void UsingJetpack()
     {
         switch (isJetpackOn)
@@ -174,8 +243,8 @@ public class Player : MonoBehaviour {
             case true:
                 anim.SetBool("UsingJetpack", true);                         // 제트팩 사용 애니메이션 실행
                 particle.Play();                                            // 불꽃 파티클 실행
-                fuel -= Time.deltaTime;                                     // 연료 사용
-                rb.AddForce(Vector3.up * jumpForce * 2, ForceMode.Force);   // 제트팩 작동(상승) 부분
+                fuel -= Time.deltaTime * 1.5f;                                     // 연료 사용
+                rb.AddForce(Vector3.up * jumpForce*1.5f, ForceMode.Force);   // 제트팩 작동(상승) 부분
                 break;
                 
             case false:
@@ -214,13 +283,18 @@ public class Player : MonoBehaviour {
         if(collision.gameObject.CompareTag("Dumbbell"))
         {
             dumCounts += 1; // 획득한 덤벨 개수 추가
-            minWeight = maxWeight - limit * dumCounts;  // 체중 하한 재설정
+            minWeight = maxWeight - 10 * dumCounts;  // 체중 하한 재설정
             Debug.Log("Minimum weights: " + minWeight + "Kg");
 
             Destroy(collision.gameObject);
         }
+        // 연료 획득 시 연료량 상한 재설정
+        else if (collision.gameObject.CompareTag("Fuel"))
+        {
+            maxFuel += 5.0f;
+        }
         // 덤벨 획득 시 감량 하한 체중 재설정
-        if (collision.gameObject.CompareTag("Food"))
+        else if (collision.gameObject.CompareTag("Food"))
         {
             weight = maxWeight;
             this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
@@ -228,61 +302,26 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public float GetFuel()
-    {
-        return fuel;
-    }
-
-    public int GetMaxFuel()
-    {
-        return (int)maxFuel;
-    }
-
-    public float GetWeight()
-    {
-        return weight;
-    }
-
-    public int GetMaxWeight()
-    {
-        return maxWeight;
-    }
-
-    public int GetHP()
-    {
-        return (int)hp;
-    }
-
-    public void SetHP(int damage)
-    {
-        if (isImmortal)
-            return;
-
-        hp -= damage;
-        return;
-    }
-
+    // 무적 타이머 작동 코루틴 
     IEnumerator SetImmortalTimer()
     {
-        int timer = 0;
+        if(!isImmortal)
+            yield return null;
+
+        float timer = 0;
         isImmortal = true;
-        while (timer<5)
+
+        while (timer<3)
         {
-            yield return new WaitForSeconds(1.0f);
-            timer++;
+            float flick = Mathf.Abs(Mathf.Sin(Time.time * 100));    // 색 점멸, 0과 1을 반복적으로 반환
+            body.materials[1].color = originColor * flick;
+            yield return new WaitForSeconds(0.05f);
+            timer += 0.05f;
         }
 
+        body.materials[1].color = originColor;
         isImmortal = false;
         yield return null;
     }
-
-    public bool IsStateImmortal()
-    {
-        return isImmortal;
-    }
-
-    public bool IsJetpackOn()
-    {
-        return isJetpackOn;
-    }
 }
+#endregion

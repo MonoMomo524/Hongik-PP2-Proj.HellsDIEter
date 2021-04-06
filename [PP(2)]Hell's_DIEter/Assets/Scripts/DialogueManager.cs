@@ -14,6 +14,10 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
 
     private float typingSpeed = 0.05f;
     private bool isTyping;
+    public bool IsTyping
+    {
+        get { return isTyping; }
+    }
 
     // 싱글톤
     public static DialogueManager instance;

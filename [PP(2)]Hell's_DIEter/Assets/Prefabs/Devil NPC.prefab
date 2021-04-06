@@ -87,6 +87,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dumb: {fileID: 1849653932521696481, guid: 1c1a7aab493c25549a8deee471a53e58, type: 3}
+  food: {fileID: 8042573665512006803, guid: 83f6fab8adafc7442b6f0354b96f3b3d, type: 3}
 --- !u!1001 &7186330840214008998
 PrefabInstance:
   m_ObjectHideFlags: 0

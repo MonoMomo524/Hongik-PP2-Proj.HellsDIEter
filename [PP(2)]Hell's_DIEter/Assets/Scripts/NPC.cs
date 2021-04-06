@@ -4,22 +4,20 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
-    private Animator anim;
+    #region Variables
+        private Animator anim;
     private GameObject player;
     private Player playerScript;
     public Transform Target;
     enum AnimStates
     {
-        IDLE = 0,
-        ATTACK1= 1,
-        ATTACK2,
-        DAMAGE,
-        MOVE,
-        STUN,
-        SEREMONY,
-        DEATH
-
+        IDLE,
+        ATTACK1
     }
+
+    private bool isPushing = false;
+    #endregion
+
 
     void Start()
     {
@@ -48,20 +46,24 @@ public class NPC : MonoBehaviour
     // 플레이어가 가까이 붙으면 밀어냄
     public void PushPlayer()
     {
-        if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack1") &&
+        if (isPushing)
+            return;
+
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack1") &&
             anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.4f)
         {
+            isPushing = true;
             player.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward*5.0f, ForceMode.Impulse);
-            playerScript.SetHP(35);
+            playerScript.Hp = 35;
 
-            if (!playerScript.IsStateImmortal())
+            if (!playerScript.isActiveAndEnabled)
                 player.gameObject.GetComponent<Player>().StartCoroutine("SetImmortalTimer");
         }
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        if(collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             anim.SetBool("Attack", true);
             PushPlayer();
@@ -74,6 +76,9 @@ public class NPC : MonoBehaviour
         {
             anim.SetBool("Attack", false);
             player.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * 5.0f, ForceMode.Impulse);
+            isPushing = false;
         }
     }
+
+
 }

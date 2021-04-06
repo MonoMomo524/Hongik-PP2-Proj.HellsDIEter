@@ -49,6 +49,9 @@ public class NPCSentence : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (DialogueManager.instance.IsTyping)
+            return;
+
         foreach (var item in TableIndexDic)
         {
             if (count < 5 && level == 1)
