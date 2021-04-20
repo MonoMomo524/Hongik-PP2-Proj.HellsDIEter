@@ -36,33 +36,29 @@ public class UIManger : MonoBehaviour
 
     #region PanelPuzzle Stage
     private PanelPuzzleController puzzleController;
-    private GameObject[] Lives = new GameObject[3];
-    private GameObject[] FlipCounts = new GameObject[3];
+    private GameObject[] Lives;
+    private GameObject[] FlipCounts;
     #endregion
+
+    #region WeightPuzzle Stage
+    private WeightPuzzleController weightController;
+    private TextMeshProUGUI timerText;
+    private GameObject[] Hands;
+    #endregion
+
     // 게임 결과
     public GameObject result;
     #endregion
 
+
     void Start()
     {
-        if (SceneManager.GetActiveScene().name == "1.Tutorial" ||
-            SceneManager.GetActiveScene().name == "2.Main")
-        {
-            stage = 0;
-            playerScript = GameObject.Find("Player").GetComponent<Player>();              // 플레이어 스크립트
-            weightText = WeightSlider.GetComponentInChildren<TextMeshProUGUI>();                     // 체중을 나타낼 텍스트
-            hpText = HPSlider.GetComponentInChildren<TextMeshProUGUI>();                                   // HP를 나타낼 텍스트
-            fuelText = FuelSlider.GetComponentInChildren<TextMeshProUGUI>();                              // 연료량을 나타낼 텍스트
-            avatar = HPSlider.transform.Find("IconImage").GetComponent<Image>();    // 플레이어 아바타 이미지
-
-            // 게이지에 표기할 값 가져오기
-            WeightSlider.maxValue = playerScript.Weight;
-            HPSlider.maxValue = playerScript.Hp;
-            FuelSlider.maxValue = playerScript.MaxFuel;
-        }
-        else if(SceneManager.GetActiveScene().name == "3.PanelPuzzle")
+        if (SceneManager.GetActiveScene().name == "3.PanelPuzzle")
         {
             stage = 1;
+            Lives = new GameObject[3];
+            FlipCounts = new GameObject[3];
+
             puzzleController = GameObject.Find("PanelPuzzle").GetComponent<PanelPuzzleController>();
 
             FlipCounts[0] = this.transform.Find("Flip Counts").Find("Pizza 1").gameObject;
@@ -85,6 +81,35 @@ public class UIManger : MonoBehaviour
                     break;
             }
         }
+        else
+        {
+            if (SceneManager.GetActiveScene().name == "4.WeightScale")
+            {
+                stage = 2;
+                weightController = GameObject.Find("Weight Puzzle Stage").GetComponent<WeightPuzzleController>();
+                timerText = transform.Find("InfoText").Find("Timer").GetComponent<TextMeshProUGUI>();
+                Hands = new GameObject[2];
+                Hands[0] = GameObject.Find("HandPoint");
+                Hands[1] = GameObject.Find("HandGrab");
+                Hands[0].SetActive(true);
+                Hands[1].SetActive(false);
+            }
+            else
+            {
+                stage = 0;
+            }
+            playerScript = GameObject.Find("Player").GetComponent<Player>();              // 플레이어 스크립트
+            weightText = WeightSlider.GetComponentInChildren<TextMeshProUGUI>();                     // 체중을 나타낼 텍스트
+            hpText = HPSlider.GetComponentInChildren<TextMeshProUGUI>();                                   // HP를 나타낼 텍스트
+            fuelText = FuelSlider.GetComponentInChildren<TextMeshProUGUI>();                              // 연료량을 나타낼 텍스트
+            avatar = HPSlider.transform.Find("IconImage").GetComponent<Image>();    // 플레이어 아바타 이미지
+
+            // 게이지에 표기할 값 가져오기
+            WeightSlider.maxValue = playerScript.Weight;
+            HPSlider.maxValue = playerScript.Hp;
+            FuelSlider.maxValue = playerScript.MaxFuel;
+        }
+
         // 게임오버 시 게임오버화면 표시
         result.SetActive(false);
     }
@@ -95,14 +120,7 @@ public class UIManger : MonoBehaviour
         if (result.gameObject.activeSelf == true)
             return;
 
-        if (stage == 0)
-        {
-            UpdateGauge();
-            UpdateAvatar();
-            if (result.gameObject.activeSelf == false && playerScript.Hp <= 0)
-                result.SetActive(true);
-        }
-        else if (stage == 1)
+        if (stage == 1)
         {
             switch (puzzleController.Lives)
             {
@@ -129,7 +147,43 @@ public class UIManger : MonoBehaviour
                 transform.Find("Rocket").gameObject.SetActive(true);
             }
         }
-        
+        else if (stage == 2)
+        {
+            if (result.gameObject.activeSelf == false && weightController.Timer <= 0)
+            {
+                result.SetActive(true);
+                return;
+            }
+
+            UpdateGauge();
+            UpdateAvatar();
+            if (result.gameObject.activeSelf == false && playerScript.Hp <= 0)
+            {
+                result.SetActive(true);
+                return;
+            }
+
+            timerText.text = "남은 시간: " + ((int)weightController.Timer).ToString();
+
+            if(playerScript.IsGrabbing == true)
+            {
+                Hands[0].SetActive(false);
+                Hands[1].SetActive(true);
+            }
+            else
+            {
+                Hands[0].SetActive(true);
+                Hands[1].SetActive(false);
+            }
+        }
+        else
+        {
+            UpdateGauge();
+            UpdateAvatar();
+            if (result.gameObject.activeSelf == false && playerScript.Hp <= 0)
+                result.SetActive(true);
+        }
+
     }
 
     // 게이지를 업데이트 하는 함수

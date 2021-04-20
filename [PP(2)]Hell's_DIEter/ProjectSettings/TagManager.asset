@@ -9,6 +9,11 @@ TagManager:
   - Food
   - Fuel
   - Panel
+  - Wind
+  - Scale
+  - Enemy
+  - Slime
+  - Turtle
   layers:
   - Default
   - TransparentFX

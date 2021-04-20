@@ -5,7 +5,7 @@ using UnityEngine;
 public class NPC : MonoBehaviour
 {
     #region Variables
-        private Animator anim;
+    private Animator anim;
     private GameObject player;
     private Player playerScript;
     public Transform Target;

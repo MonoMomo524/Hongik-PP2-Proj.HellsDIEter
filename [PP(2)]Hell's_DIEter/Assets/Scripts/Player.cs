@@ -10,6 +10,8 @@ public class Player : MonoBehaviour {
     private ParticleSystem particle;
     private Color originColor;
     public SkinnedMeshRenderer body;
+    public GameObject dumbbell;
+    private GameObject grab;
 
     private bool isJetpackOn = false;       // 제트팩 사용 확인
     public bool IsJetpackOn
@@ -49,7 +51,7 @@ public class Player : MonoBehaviour {
         get { return maxWeight; }
     }
 
-    private int minWeight = 100;  // 감량 가능 몸무게
+    [SerializeField]private int minWeight = 100;  // 감량 가능 몸무게
     public int MinWeight
     {
         get { return minWeight; }
@@ -70,11 +72,24 @@ public class Player : MonoBehaviour {
         }
     }
 
+    private bool usable;                          // 마우스를 자유롭게 사용 가능한지
+    public bool Usable
+    {
+        get { return usable; }
+        set { usable = value; }
+    }
+
     private bool isGrounded;                 // 지면에 있는지
     private int dumCounts = 0;              // 덤벨 개수
     private float moveSpeed = 5.0f;     // 캐릭터 이동 속도
     private float rotSpeed = 10.0f;      // 캐릭터 회전 속도
     private float jumpForce = 10.0f;    // 점프 힘
+    private bool isGrabbing = false;
+    public bool IsGrabbing
+    {
+        get { return isGrabbing; }
+    }
+
     #endregion
 
     void Start ()
@@ -87,16 +102,18 @@ public class Player : MonoBehaviour {
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        usable = true;
 
         EventManager.Instance.AddListener(TUTORIAL_TYPE.MOVEMENTS, OnEvent);
 
         originColor = body.materials[1].color;
+        
     }
 
     void Update ()
     {
         // 마우스 On/Off
-        if(Input.GetKeyDown(KeyCode.LeftControl))
+        if(Input.GetKeyDown(KeyCode.LeftControl) && usable)
         {
             if (Cursor.visible == false)
             {
@@ -123,27 +140,79 @@ public class Player : MonoBehaviour {
                 {
                     case 0:
                         this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                        moveSpeed = 10.0f;
+                        jumpForce = 17.5f;
                         break;
                     case 40:
                         this.gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+                        moveSpeed = 9.0f;
+                        jumpForce = 16.5f;
                         break;
                     case 70:
                         this.gameObject.transform.localScale = new Vector3(0.95f, 0.95f, 0.95f);
+                        moveSpeed = 7.5f;
+                        jumpForce = 15.0f;
                         break;
                     case 90:
                         this.gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+                        moveSpeed = 6.5f;
+                        jumpForce = 12.5f;
                         break;
                     case 100:
                         this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                        moveSpeed = 5.0f;
+                        jumpForce = 10.0f;
                         break;
                 }
 
                 cam.GetComponent<ThirdPersonCamera>().SetDistance((int)weight);
             }
         }
-        else if (Input.GetMouseButton(1) || Input.GetMouseButtonUp(1))
+        else if (Input.GetMouseButtonUp(1))
         {
             anim.SetBool("DoingExercise", false);
+        }
+
+        // FOR DEBUGING
+        if(Input.GetKeyDown(KeyCode.Keypad0))
+        {
+            Vector3 spawn = transform.position;
+            spawn.Set(transform.position.x, transform.position.y + 5, transform.position.z);
+            Instantiate(dumbbell, spawn, Quaternion.identity);
+        }
+
+        // 잡기
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Debug.DrawRay(transform.position, transform.forward * 10.0f, Color.blue, 0.3f);
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 10.0f)
+                && hit.transform.CompareTag("Slime"))
+            {
+                isGrabbing = !isGrabbing;
+
+                if (isGrabbing)
+                {
+                    grab = hit.transform.gameObject;
+                    if (grab.transform.Find("Body").CompareTag("Slime"))
+                        grab.GetComponent<Slime>().Estate = Slime.STATE.CATCHED;
+
+                    grab.transform.SetParent(this.gameObject.transform);
+                }
+            }
+            else if (Physics.Raycast(transform.position, transform.forward, out hit, 10.0f)
+                && hit.transform.CompareTag("Scale")
+                && grab != null)
+            {
+                hit.transform.GetComponent<Scale>().CheckMonster();
+                isGrabbing = false;
+                grab = null;
+            }
+        }
+
+        if (grab != null)
+        {
+            GrabObject();
         }
     }
 
@@ -283,7 +352,7 @@ public class Player : MonoBehaviour {
         if(collision.gameObject.CompareTag("Dumbbell"))
         {
             dumCounts += 1; // 획득한 덤벨 개수 추가
-            minWeight = maxWeight - 10 * dumCounts;  // 체중 하한 재설정
+            minWeight -= 10 * dumCounts;  // 체중 하한 재설정
             Debug.Log("Minimum weights: " + minWeight + "Kg");
 
             Destroy(collision.gameObject);
@@ -299,6 +368,12 @@ public class Player : MonoBehaviour {
             weight = maxWeight;
             this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             Destroy(collision.gameObject);
+        }
+        else if (collision.gameObject.CompareTag("Slime"))
+        {
+            rb.AddForce(-transform.forward * 1.5f, ForceMode.Impulse);
+            hp -= 10;
+            StartCoroutine("SetImmortalTimer");
         }
     }
 
@@ -322,6 +397,23 @@ public class Player : MonoBehaviour {
         body.materials[1].color = originColor;
         isImmortal = false;
         yield return null;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Wind"))
+        {
+            rb.AddForce(Vector3.up * jumpForce * 2.5f, ForceMode.Force);
+        }
+    }
+
+    private void GrabObject()
+    {
+        if (isGrabbing)
+        {
+            Vector3 pos = transform.position + transform.forward * 5.0f + transform.up * 5.0f;
+            grab.transform.position = pos;
+        }
     }
 }
 #endregion

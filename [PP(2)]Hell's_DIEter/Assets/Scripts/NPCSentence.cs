@@ -16,6 +16,12 @@ public class NPCSentence : MonoBehaviour
     string[] line;
     List<string> sentences = new List<string>();
     private Dictionary<int, string> TableIndexDic = new Dictionary<int, string>();
+    //private bool isClickable = true;
+    //public bool IsClickable
+    //{
+    //    get { return isClickable; }
+    //    set { isClickable = value; }
+    //}
     
     private void Start()
     {
@@ -51,6 +57,11 @@ public class NPCSentence : MonoBehaviour
     {
         if (DialogueManager.instance.IsTyping)
             return;
+
+        //if (DialogueManager.instance.IsTyping == false)
+        //    isClickable = true;
+        //else
+        //    isClickable = false;
 
         foreach (var item in TableIndexDic)
         {
