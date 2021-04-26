@@ -9,7 +9,7 @@ public class Scale : MonoBehaviour
     public Transform[] Point = new Transform[3];
     public GameObject Slime;
     public GameObject Player;
-    private GameObject slime;
+    [SerializeField]private GameObject slime;
     private bool monster = false;
     private int count;
 

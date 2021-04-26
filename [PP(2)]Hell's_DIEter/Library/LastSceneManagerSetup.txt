@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/2.Main.unity
+- path: Assets/Scenes/3.PanelPuzzle.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

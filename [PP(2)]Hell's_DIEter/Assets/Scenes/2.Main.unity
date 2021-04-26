@@ -445,8 +445,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 95851657}
-  m_LocalRotation: {x: 0.27225435, y: -0.29017037, z: 0.08649535, w: 0.9133441}
-  m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
+  m_LocalRotation: {x: 0.27225438, y: -0.29017028, z: 0.086495325, w: 0.9133441}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 323738327}
@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttons: []
-  menu: {fileID: 0}
+  window: {fileID: 0}
 --- !u!114 &151954366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1988,7 +1988,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttons: []
-  menu: {fileID: 0}
+  window: {fileID: 0}
 --- !u!114 &636667360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3246,7 +3246,7 @@ MonoBehaviour:
   buttons:
   - {fileID: 21300000, guid: 46dc4a5339a24b24faa6585cf085e45c, type: 3}
   - {fileID: 21300000, guid: 2f28499c38132784ea61ea50aa229ea3, type: 3}
-  menu: {fileID: 0}
+  window: {fileID: 0}
 --- !u!114 &1365168774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3813,7 +3813,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttons: []
-  menu: {fileID: 13420135}
+  window: {fileID: 0}
 --- !u!114 &1433873233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5078,6 +5078,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1743023139}
   m_CullTransparentMesh: 0
+--- !u!1 &1780163935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1780163937}
+  - component: {fileID: 1780163936}
+  m_Layer: 0
+  m_Name: SaveCtrl
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1780163936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780163935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 729c43871a05d36499bdba05b1b1fe90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DataFileName: HellsDIEter_save.json
+  gameData:
+    isOpen1: 0
+    isOpen2: 0
+    isOpen3: 0
+    isOpen4: 0
+    isOpen5: 0
+--- !u!4 &1780163937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780163935}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 318.2194, y: 195.06017, z: -0.8027954}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1790839085
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,9 +7,9 @@ using TMPro;
 public class ButtonController : MonoBehaviour
 {
     public Sprite[] buttons;    // 버튼 스프라이트 저장
-    public GameObject menu;
+    public GameObject window;
     bool isOpened = false;          // 인벤토리 창이 열려있는지
-    bool isPaused = false;
+    static bool isPaused = false;
     bool isListening = true;
 
     // 인벤토리 창 열기/닫기
@@ -37,6 +37,7 @@ public class ButtonController : MonoBehaviour
         return;
     }
 
+    // 메뉴를을 켜고 끄는 메소드
     public void MenuPopUp()
     {
         isPaused = !isPaused;
@@ -54,7 +55,30 @@ public class ButtonController : MonoBehaviour
         }
 
         // 메뉴 팝업 띄우기
-        menu.gameObject.SetActive(isPaused);
+        window = GameObject.Find("Canvas").transform.Find("Menu").gameObject;
+        window.gameObject.SetActive(!window.activeSelf);
+        window = null;
+    }
+
+    // 도움말을 켜고 끄는 메소드
+    public void HelpPopUp()
+    {
+        isPaused = !isPaused;
+
+        // 일시정지
+        if (isPaused)
+        {
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+        }
+
+        // 메뉴 팝업 띄우기
+        window = GameObject.Find("Canvas").transform.Find("HowTo").gameObject;
+        window.gameObject.SetActive(!window.activeSelf);
+        window = null;
     }
 
     public void QuitGame()
@@ -75,13 +99,13 @@ public class ButtonController : MonoBehaviour
                 if (item.mute == false)
                 {
                     this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_soundOFF", typeof(Sprite)) as Sprite;
-                    this.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "OFF";
+                    this.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "끄기";
                 }
                     
                 else
                 {
                     this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_soundON", typeof(Sprite)) as Sprite;
-                    this.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "ON";
+                    this.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "켜기";
                 }
                     
                 Debug.Log("Turn Off Audio: " + item.mute);
