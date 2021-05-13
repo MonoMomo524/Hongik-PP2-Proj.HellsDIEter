@@ -8,7 +8,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7186330840489430220}
+  - component: {fileID: 1853707084145420541}
   - component: {fileID: 7186330840489430223}
   - component: {fileID: 7186330840489430221}
   - component: {fileID: 7186330840489430222}
@@ -20,15 +20,15 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7186330840489430220
+--- !u!4 &1853707084145420541
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7186330840489430210}
-  m_LocalRotation: {x: -0, y: 0.99628544, z: -0, w: -0.08611241}
-  m_LocalPosition: {x: -2.36, y: 0.13, z: -2.51}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 7, y: 7, z: 7}
   m_Children:
   - {fileID: 7186330840214138422}
@@ -74,6 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30e392412cb668247888073f43548c33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DialogueBubble: {fileID: 0}
 --- !u!114 &6883839945495642783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,14 +87,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d6436ecf678dc143ae410c7d99f730c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dumb: {fileID: 1849653932521696481, guid: 1c1a7aab493c25549a8deee471a53e58, type: 3}
+  dumb: {fileID: 2410912379129976396, guid: 1c1a7aab493c25549a8deee471a53e58, type: 3}
   food: {fileID: 8042573665512006803, guid: 83f6fab8adafc7442b6f0354b96f3b3d, type: 3}
+  drop: {fileID: 0}
 --- !u!1001 &7186330840214008998
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 7186330840489430220}
+    m_TransformParent: {fileID: 1853707084145420541}
     m_Modifications:
     - target: {fileID: 100016, guid: 75bf79f8876829a44bb388ccd90400a7, type: 3}
       propertyPath: m_Name

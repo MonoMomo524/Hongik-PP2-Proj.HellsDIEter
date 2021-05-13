@@ -79,6 +79,4 @@ public class NPC : MonoBehaviour
             isPushing = false;
         }
     }
-
-
 }

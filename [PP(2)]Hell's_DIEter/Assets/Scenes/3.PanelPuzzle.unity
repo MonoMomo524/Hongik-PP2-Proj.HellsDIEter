@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 72a527d69ac20c04c838ed822d1453d8,
+    type: 2}
   m_UseShadowmask: 0
 --- !u!196 &5
 NavMeshSettings:
@@ -5206,7 +5207,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &114381940
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5224,7 +5225,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1759.9998, y: 989.6084}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &114381941
@@ -5973,7 +5974,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 4
+    type: 5
     angle: 25
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
@@ -5981,7 +5982,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 1, y: 1, z: 1}
+    m_Scale: {x: 50, y: 1, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -10017,7 +10018,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 225737373}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -400.31073, y: -166.8, z: 12.6}
+  m_LocalPosition: {x: -400.31073, y: -99.9, z: 12.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 995725003}
@@ -10060,7 +10061,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1759.9998, y: 989.6084}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &398773653
@@ -11659,7 +11660,7 @@ MonoBehaviour:
   Model: {fileID: 6231907790811244665, guid: 1450c311c453ddd41a274ac3b2ac2f67, type: 3}
   materials:
   - {fileID: 2100000, guid: 2546731775effae4abf84da6b5d84786, type: 2}
-  - {fileID: 2100000, guid: 701c6617191ee2c46b2162dcec2fabad, type: 2}
+  - {fileID: 2100000, guid: 5f67f67ac3a35aa46a1b5510e67444fd, type: 2}
 --- !u!1 &896971376
 GameObject:
   m_ObjectHideFlags: 0
@@ -22289,7 +22290,7 @@ GameObject:
   - component: {fileID: 1231063496}
   - component: {fileID: 1231063495}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22302,7 +22303,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1231063494}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!124 &1231063496
 Behaviour:
   m_ObjectHideFlags: 0
@@ -22453,13 +22454,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1279973665}
-  m_LocalRotation: {x: 0.9159568, y: -0.08216733, z: 0.24542983, w: 0.3066527}
+  m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
   m_LocalPosition: {x: -0.42333984, y: 126.104996, z: 44.00875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 142.98, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
 --- !u!1 &1322028079
 GameObject:
   m_ObjectHideFlags: 0
@@ -23460,12 +23461,12 @@ PrefabInstance:
     - target: {fileID: 7176674726121603307, guid: 5fbfbee0f9885764383291c4c5e18668,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.7028302
+      value: 0.7783019
       objectReference: {fileID: 0}
     - target: {fileID: 7176674726121603307, guid: 5fbfbee0f9885764383291c4c5e18668,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.85277826
+      value: 0.8891509
       objectReference: {fileID: 0}
     - target: {fileID: 7176674726121603307, guid: 5fbfbee0f9885764383291c4c5e18668,
         type: 3}
@@ -23476,6 +23477,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Intensity
       value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8235840696533425553, guid: 5fbfbee0f9885764383291c4c5e18668,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.355
+      objectReference: {fileID: 0}
+    - target: {fileID: 8235840696533425553, guid: 5fbfbee0f9885764383291c4c5e18668,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.261
       objectReference: {fileID: 0}
     - target: {fileID: 8583780524957933453, guid: 5fbfbee0f9885764383291c4c5e18668,
         type: 3}

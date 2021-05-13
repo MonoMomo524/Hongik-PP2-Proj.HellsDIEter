@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
+using System.IO;
+using System;
 
 public class DataManager : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class DataManager : MonoBehaviour
     }
 
     // 데이터 파일 이름 설정
-    public string DataFileName = "HellsDIEter_save.json";
+    public const string DataFileName = "HellsDIEter_save.json";
 
     public GameData gameData;
     public GameData GameData
@@ -64,6 +65,7 @@ public class DataManager : MonoBehaviour
             string FromJsonData = File.ReadAllText(filePath);
             gameData = JsonUtility.FromJson<GameData>(FromJsonData);
         }
+        // 새 저장파일 생성
         else
         {
             gameData = new GameData();

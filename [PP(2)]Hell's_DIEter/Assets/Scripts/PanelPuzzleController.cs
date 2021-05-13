@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Panel
 {
@@ -50,6 +51,8 @@ public class PanelPuzzleController : MonoBehaviour
     private List<Panel> goalPanels;
     private List<Panel> myPanels;
 
+    private bool selected = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -81,6 +84,7 @@ public class PanelPuzzleController : MonoBehaviour
 
     private void Update()
     {
+        // 맞추지 못했다면 목숨-1
         if(chance == 0 && clear == false)
         {
             flipable = false;
@@ -89,23 +93,38 @@ public class PanelPuzzleController : MonoBehaviour
             StartCoroutine(ResetPanels());
         }
 
+        // 게임 오버
         if(lives==0)
         {
             Debug.Log("GAME OVER");
+            GameObject.Find("Canvas").transform.Find("GameResult").gameObject.SetActive(true);
+            StartCoroutine(EndGame());
         }
-        //if(Input.GetMouseButtonDown(0))
-        //{
-        //    RaycastHit hit;
-        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //    Physics.Raycast(ray, out hit);
+        // 게임 클리어
+        else if (clear == true)
+        {
+            GameObject.Find("Rocket").SetActive(true);
+            level++;
+            StartCoroutine(EndGame());
+        }
 
-        //    if(hit.transform.CompareTag("Panel"))
-        //    {
+        // 게임 플레이 중
+        // 마우스 조작
+        if (clear == false && flipable == true && Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Physics.Raycast(ray, out hit);
 
-        //    }
+            if (hit.transform.CompareTag("Panel"))
+            {
+                Panel result = myPanels.Find(x => x.PanelObject.name == hit.transform.name);
 
-        //    myPanels.en
-        //}
+                FlipPanel(myPanels, result.Number);
+                selected = true;
+            }
+        }
+        //키보드 조작
         if (clear == false && flipable == true)
         {
             if (Input.GetKeyDown(KeyCode.Keypad1))
@@ -113,64 +132,70 @@ public class PanelPuzzleController : MonoBehaviour
                 chance--;
                 inputs.Add(6);
                 FlipPanel(myPanels, 6);
+                selected = true;
             }
             else if (Input.GetKeyDown(KeyCode.Keypad2))
             {
                 chance--;
                 inputs.Add(7);
                 FlipPanel(myPanels, 7);
+                selected = true;
             }
             else if (Input.GetKeyDown(KeyCode.Keypad3))
             {
                 chance--;
                 inputs.Add(8);
                 FlipPanel(myPanels, 8);
+                selected = true;
             }
             else if (Input.GetKeyDown(KeyCode.Keypad4))
             {
                 chance--;
                 inputs.Add(3);
                 FlipPanel(myPanels, 3);
+                selected = true;
             }
             else if (Input.GetKeyDown(KeyCode.Keypad5))
             {
                 chance--;
                 inputs.Add(4);
                 FlipPanel(myPanels, 4);
+                selected = true;
             }
             else if (Input.GetKeyDown(KeyCode.Keypad6))
             {
                 chance--;
                 inputs.Add(5);
                 FlipPanel(myPanels, 5);
+                selected = true;
             }
             else if (Input.GetKeyDown(KeyCode.Keypad7))
             {
                 chance--;
                 inputs.Add(0);
                 FlipPanel(myPanels, 0);
+                selected = true;
             }
             else if (Input.GetKeyDown(KeyCode.Keypad8))
             {
                 chance--;
                 inputs.Add(1);
                 FlipPanel(myPanels, 1);
+                selected = true;
             }
             else if (Input.GetKeyDown(KeyCode.Keypad9))
             {
                 chance--;
                 inputs.Add(2);
                 FlipPanel(myPanels, 2);
-            }
-
-            if(Input.anyKey)
-            {
-                clear = ComparePanels();
+                selected = true;
             }
         }
-        else if(clear == true)
+        // 맞는지 확인
+        if (selected)
         {
-            Debug.Log("TADA★");
+            clear = ComparePanels();
+            selected = false;
         }
     }
 
@@ -229,17 +254,17 @@ public class PanelPuzzleController : MonoBehaviour
     private void SetColor(Panel panel)
     {
         // 패널 앞뒷면 색상 설정
-        if (panel.State == false)
-        {
-            // RED
-            panel.PanelObject.transform.GetComponent<MeshRenderer>().sharedMaterial = materials[1];
-            panel.PanelObject.transform.Rotate(new Vector3(0f, 180f, 0f));
-        }
-        else      
+        if (panel.State)
         {
             // WHITE  
             panel.PanelObject.transform.GetComponent<MeshRenderer>().sharedMaterial = materials[0];
             panel.PanelObject.transform.Rotate(new Vector3(0f, 0f, 0f));
+        }
+        else
+        {
+            // SKY BLUE
+            panel.PanelObject.transform.GetComponent<MeshRenderer>().sharedMaterial = materials[1];
+            panel.PanelObject.transform.Rotate(new Vector3(0f, 180f, 0f));
         }
 
         return;
@@ -259,7 +284,6 @@ public class PanelPuzzleController : MonoBehaviour
             if (numbers.Contains<int>(num)==false)
             {
                 numbers[i] = num;
-                Debug.Log(num);
                 i++;
             }
         }
@@ -332,5 +356,18 @@ public class PanelPuzzleController : MonoBehaviour
         }
         inputs.Clear();
         flipable = true;
+    }
+
+    IEnumerator EndGame()
+    {
+        int i = 0;
+        while(i<8)
+        {
+            yield return new WaitForSeconds(1.0f);
+            i++;
+        }
+
+        Debug.Log("END");
+        SceneManager.UnloadSceneAsync(5);
     }
 }

@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using System;
 
 public class Player : MonoBehaviour {
 
@@ -10,7 +12,6 @@ public class Player : MonoBehaviour {
     private ParticleSystem particle;
     private Color originColor;
     public SkinnedMeshRenderer body;
-    public GameObject dumbbell;
     private GameObject grab;
 
     private bool isJetpackOn = false;       // 제트팩 사용 확인
@@ -25,7 +26,7 @@ public class Player : MonoBehaviour {
         get { return isImmortal; }
     }
 
-    private float fuel = 100.0f;    // 비행 연료
+    private float fuel = 1.0f;    // 비행 연료
     public float Fuel
     {
         get { return fuel; }
@@ -51,7 +52,7 @@ public class Player : MonoBehaviour {
         get { return maxWeight; }
     }
 
-    [SerializeField]private int minWeight = 100;  // 감량 가능 몸무게
+    private int minWeight = 100;  // 감량 가능 몸무게
     public int MinWeight
     {
         get { return minWeight; }
@@ -79,17 +80,22 @@ public class Player : MonoBehaviour {
         set { usable = value; }
     }
 
-    private bool isGrounded;                 // 지면에 있는지
     private int dumCounts = 0;              // 덤벨 개수
-    private float moveSpeed = 5.0f;     // 캐릭터 이동 속도
-    private float rotSpeed = 10.0f;      // 캐릭터 회전 속도
-    private float jumpForce = 10.0f;    // 점프 힘
-    private bool isGrabbing = false;
+    public int DumCounts
+    {
+        get { return dumCounts; }
+    }
+
+    private bool isGrabbing = false;        // 몬스터를 잡고있는지
     public bool IsGrabbing
     {
         get { return isGrabbing; }
     }
 
+    [SerializeField]private bool isGrounded;                 // 지면에 있는지
+    private float moveSpeed = 5.0f;     // 캐릭터 이동 속도
+    private float rotSpeed = 10.0f;      // 캐릭터 회전 속도
+    private float jumpForce = 10.0f;    // 점프 힘
     #endregion
 
     void Start ()
@@ -100,11 +106,11 @@ public class Player : MonoBehaviour {
         fuel = maxFuel;
         particle = gameObject.GetComponentInChildren<ParticleSystem>();
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         usable = true;
 
-        EventManager.Instance.AddListener(TUTORIAL_TYPE.MOVEMENTS, OnEvent);
+        //EventManager.Instance.AddListener(TUTORIAL_TYPE.MOVEMENTS, OnEvent);
 
         originColor = body.materials[1].color;
         
@@ -130,56 +136,14 @@ public class Player : MonoBehaviour {
         // 체중 감량과 애니메이션
         if (Input.GetMouseButtonDown(1))
         {
-            if (dumCounts != 0)
-            {
-                weight += -dumCounts;
-                anim.SetBool("DoingExercise", true);
-                if (weight < minWeight)
-                    weight = minWeight;
-                switch (weight)
-                {
-                    case 0:
-                        this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                        moveSpeed = 10.0f;
-                        jumpForce = 17.5f;
-                        break;
-                    case 40:
-                        this.gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-                        moveSpeed = 9.0f;
-                        jumpForce = 16.5f;
-                        break;
-                    case 70:
-                        this.gameObject.transform.localScale = new Vector3(0.95f, 0.95f, 0.95f);
-                        moveSpeed = 7.5f;
-                        jumpForce = 15.0f;
-                        break;
-                    case 90:
-                        this.gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
-                        moveSpeed = 6.5f;
-                        jumpForce = 12.5f;
-                        break;
-                    case 100:
-                        this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                        moveSpeed = 5.0f;
-                        jumpForce = 10.0f;
-                        break;
-                }
-
-                cam.GetComponent<ThirdPersonCamera>().SetDistance((int)weight);
-            }
+            LoosingWeight();
         }
         else if (Input.GetMouseButtonUp(1))
         {
             anim.SetBool("DoingExercise", false);
         }
 
-        // FOR DEBUGING
-        if(Input.GetKeyDown(KeyCode.Keypad0))
-        {
-            Vector3 spawn = transform.position;
-            spawn.Set(transform.position.x, transform.position.y + 5, transform.position.z);
-            Instantiate(dumbbell, spawn, Quaternion.identity);
-        }
+        MoveCharacter();    // 플레이어 이동
 
         // 잡기
         if (Input.GetMouseButtonDown(0))
@@ -216,6 +180,55 @@ public class Player : MonoBehaviour {
         }
     }
 
+    // 체중 감소메소드
+    private void LoosingWeight()
+    {
+        if (dumCounts != 0)
+        {
+            weight += -dumCounts;
+            anim.SetBool("DoingExercise", true);
+            if (weight < minWeight)
+                weight = minWeight;
+
+            // 체중에 따라 플레이어 사이즈와 능력치 변경
+            ResizingWeight(weight);
+
+            //cam.GetComponent<ThirdPersonCamera>().SetDistance((int)weight);
+        }
+    }
+
+    private void ResizingWeight(float weight)
+    {
+        switch (weight)
+        {
+            case 0:
+                this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                moveSpeed = 10.0f;
+                jumpForce = 17.5f;
+                break;
+            case 40:
+                this.gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+                moveSpeed = 9.0f;
+                jumpForce = 16.5f;
+                break;
+            case 70:
+                this.gameObject.transform.localScale = new Vector3(0.95f, 0.95f, 0.95f);
+                moveSpeed = 7.5f;
+                jumpForce = 15.0f;
+                break;
+            case 90:
+                this.gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+                moveSpeed = 6.5f;
+                jumpForce = 12.5f;
+                break;
+            case 100:
+                this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                moveSpeed = 5.0f;
+                jumpForce = 10.0f;
+                break;
+        }
+    }
+
     private void FixedUpdate()
     {
         // 플레이어 체력 확인 및 회복
@@ -223,28 +236,12 @@ public class Player : MonoBehaviour {
         {
             hp += 1 * Time.deltaTime;
         }
-
-        MoveCharacter();    // 플레이어 이동
-
-        UsingJetpack();     // 제트팩 사용 처리
     }
 
     #region Methods
-    public void OnEvent(TUTORIAL_TYPE eventType, bool flag)
-    {
-        switch (eventType)
-        {
-            case TUTORIAL_TYPE.MOVEMENTS:
-                break;
-            case TUTORIAL_TYPE.DECREASE:
-                break;
-            case TUTORIAL_TYPE.INCREASE:
-                break;
-            default:
-                break;
-        }
-    }
     
+
+
     private void MoveCharacter()
     {
         Vector2 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
@@ -289,7 +286,6 @@ public class Player : MonoBehaviour {
                 isJetpackOn = false;
             }
         }
-
         UsingJetpack();
 
         if (isMove)         // 이동 처리
@@ -313,7 +309,7 @@ public class Player : MonoBehaviour {
                 anim.SetBool("UsingJetpack", true);                         // 제트팩 사용 애니메이션 실행
                 particle.Play();                                            // 불꽃 파티클 실행
                 fuel -= Time.deltaTime * 1.5f;                                     // 연료 사용
-                rb.AddForce(Vector3.up * jumpForce*1.5f, ForceMode.Force);   // 제트팩 작동(상승) 부분
+                rb.AddForce(Vector3.up * jumpForce * 1.5f, ForceMode.Force);   // 제트팩 작동(상승) 부분
                 break;
                 
             case false:
@@ -342,8 +338,28 @@ public class Player : MonoBehaviour {
             isJetpackOn = false;                // 제트팩 사용 중 아님
             isGrounded = true;
         }
+        // B3 - 2 입장
+        if(other.CompareTag("PanelRoom") && PanelPuzzleController.level == 1)
+        {
+            GameObject.Find("Canvas").SetActive(false);
+            SceneLoader.Instance.LoadScene("3.PanelPuzzle");
+        }
+    }
 
-        return;
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Wind"))
+        {
+            rb.AddForce(Vector3.up * jumpForce * 2.5f, ForceMode.Force);
+        }
+        else if (other.CompareTag("FoodRoom"))
+        {
+            weight += Time.deltaTime * 1;
+            if (weight > maxWeight)
+                weight = maxWeight;
+
+            ResizingWeight(weight);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -360,6 +376,7 @@ public class Player : MonoBehaviour {
         // 연료 획득 시 연료량 상한 재설정
         else if (collision.gameObject.CompareTag("Fuel"))
         {
+            Destroy(collision.gameObject);
             maxFuel += 5.0f;
         }
         // 덤벨 획득 시 감량 하한 체중 재설정
@@ -397,14 +414,6 @@ public class Player : MonoBehaviour {
         body.materials[1].color = originColor;
         isImmortal = false;
         yield return null;
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.CompareTag("Wind"))
-        {
-            rb.AddForce(Vector3.up * jumpForce * 2.5f, ForceMode.Force);
-        }
     }
 
     private void GrabObject()

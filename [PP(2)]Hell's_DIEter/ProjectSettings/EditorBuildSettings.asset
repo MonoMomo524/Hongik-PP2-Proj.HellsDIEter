@@ -4,5 +4,26 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/0.Title.unity
+    guid: 73364489c8e025f4dade55b1ecb63416
+  - enabled: 1
+    path: Assets/Scenes/0.5 StoryScene.unity
+    guid: a4aab6202de57f7498df3e1f8819a27b
+  - enabled: 1
+    path: Assets/Scenes/1.Tutorial.unity
+    guid: e39caa8eb323d3f4cb713f3d84cf8972
+  - enabled: 1
+    path: Assets/Scenes/2.Main.unity
+    guid: a0f5fae6c3d79564e86aee72b863eabb
+  - enabled: 1
+    path: Assets/Scenes/3.PanelPuzzle.unity
+    guid: 3e3c2fd638fedb74b80ab284a7e4267e
+  - enabled: 1
+    path: Assets/Scenes/4.WeightScale.unity
+    guid: ea8f9b2ea6534704bacb14b504a86113
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene.unity
+    guid: 9fa89985970148f429f4730b9c953251
   m_configObjects: {}

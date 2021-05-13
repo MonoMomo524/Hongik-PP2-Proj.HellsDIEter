@@ -14,6 +14,9 @@ TagManager:
   - Enemy
   - Slime
   - Turtle
+  - FoodRoom
+  - PanelRoom
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -25,7 +28,7 @@ TagManager:
   - 
   - PostProcessing
   - Ground
-  - 
+  - Minimap
   - 
   - 
   - 

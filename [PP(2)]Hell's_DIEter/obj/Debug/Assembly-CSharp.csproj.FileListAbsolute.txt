@@ -312,3 +312,4 @@ D:\룰루랄라\자기개발\Github\ProgramingProject2\[PP(2)]Hell's_DIEter\obj\
 D:\룰루랄라\자기개발\Github\ProgramingProject2\[PP(2)]Hell's_DIEter\obj\Debug\Assembly-CSharp.csproj.CopyComplete
 D:\룰루랄라\자기개발\Github\ProgramingProject2\[PP(2)]Hell's_DIEter\obj\Debug\Assembly-CSharp.dll
 D:\룰루랄라\자기개발\Github\ProgramingProject2\[PP(2)]Hell's_DIEter\obj\Debug\Assembly-CSharp.pdb
+D:\룰루랄라\자기개발\Github\ProgramingProject2\[PP(2)]Hell's_DIEter\Temp\bin\Debug\nunit.framework.dll

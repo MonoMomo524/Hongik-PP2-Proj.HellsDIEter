@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6231907790811244671}
   m_Layer: 0
   m_Name: Panel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6231907790811244665}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.000042356263}
+  m_LocalRotation: {x: 0, y: -0.00004729553, z: 0, w: -1}
   m_LocalPosition: {x: -12, y: -12, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 0.30000004}
   m_Children: []
@@ -59,8 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2546731775effae4abf84da6b5d84786, type: 2}
-  - {fileID: 2100000, guid: 701c6617191ee2c46b2162dcec2fabad, type: 2}
+  - {fileID: 2100000, guid: 5f67f67ac3a35aa46a1b5510e67444fd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

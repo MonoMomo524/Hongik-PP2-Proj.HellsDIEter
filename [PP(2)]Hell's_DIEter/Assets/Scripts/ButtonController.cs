@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ButtonController : MonoBehaviour
 {
@@ -107,9 +108,18 @@ public class ButtonController : MonoBehaviour
                     this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_soundON", typeof(Sprite)) as Sprite;
                     this.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "켜기";
                 }
-                    
-                Debug.Log("Turn Off Audio: " + item.mute);
+
+                //GameData data = GameObject.FindObjectOfType<GameData>()
+                Debug.Log("Audio state: " + item.mute);
             }
         }
+    }
+
+    public void LoadNextScene()
+    {
+        int index = SceneManager.GetActiveScene().buildIndex;
+        string path = SceneUtility.GetScenePathByBuildIndex(index + 1);
+        string name = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
+        SceneLoader.Instance.LoadScene(name);
     }
 }
