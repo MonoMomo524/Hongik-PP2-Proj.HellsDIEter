@@ -91,7 +91,6 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     // 다음 문장을 출력할 스크립트로 설정
     public void NextSentence()
     {
-
         // 출력할 문장이 남아있다면
         if (sentences.Count != 0)
         {

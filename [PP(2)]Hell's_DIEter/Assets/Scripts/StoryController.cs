@@ -11,7 +11,6 @@ public class StoryController : MonoBehaviour
     public Sprite[] Cuts = new Sprite[3]; //바뀌어질 이미지
     private TextMeshProUGUI tmPro;
     private int index = 0;
-    private bool done = false;
 
     private void Start()
     {

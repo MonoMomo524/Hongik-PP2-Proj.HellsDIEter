@@ -1,23 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
 public class DoorController : MonoBehaviour
 {
+    public CanvasGroup dialogueGroup;
     public int limit;
-    TextMeshProUGUI sentence;
+
+    private Text sentence;
+    private GameObject nextText;
 
     private void Start()
     {
-        sentence = GameObject.Find("UI").transform.Find("Dialogue").transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        sentence = GameObject.Find("UI").transform.Find("Dialogue").GetChild(0).GetComponent<Text>();
+        nextText = GameObject.Find("UI").transform.Find("Dialogue").GetChild(1).gameObject;
     }
 
     private void OnDoorwayOpen(float weight)
     {
         if ((int)weight > limit)
         {
-            StartCoroutine(ShowDoorInfo());
+            ShowDoorInfo();
             return;
         }
 
@@ -47,14 +51,22 @@ public class DoorController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        dialogueGroup.alpha = 1;
+        dialogueGroup.blocksRaycasts = true;    // 마우스 이벤트 감지
         OnDoorwayOpen(GameObject.FindObjectOfType<Player>().Weight);
     }
 
-    IEnumerator ShowDoorInfo()
+    private void ShowDoorInfo()
     {
-        sentence.text = "여길 지나가고 싶거든 " + limit + "kg 이하로 감량해라!\n-앙마-";
-        yield return new WaitForSeconds(4f);
+        // 안내창 띄우기
+        sentence.text = "여길 지나가고 싶거든 " + limit + "kg 이하로 감량해라!\n-앙마-\n...라고 쓰여있다.";
+        nextText.SetActive(true);
+    }
 
-        this.gameObject.SetActive(false);
+    private void CloseWindow()
+    {
+        dialogueGroup.alpha = 0;
+        dialogueGroup.blocksRaycasts = false;
+        nextText.SetActive(false);
     }
 }

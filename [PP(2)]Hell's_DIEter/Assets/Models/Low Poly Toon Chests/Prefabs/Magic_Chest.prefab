@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 125, y: 125, z: 125}
   m_Children: []
   m_Father: {fileID: 485232}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &13797966
 SkinnedMeshRenderer:
@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 8636428264342094307}
   - component: {fileID: 7610261285577964215}
   - component: {fileID: 1980692708653273928}
+  - component: {fileID: 8213908572270394285}
   m_Layer: 0
   m_Name: Magic_Chest
   m_TagString: Chest
@@ -115,10 +116,10 @@ Transform:
   m_LocalPosition: {x: -2.4500635, y: -6.7851706, z: -4.925662}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children:
+  - {fileID: 6164591155896498005}
   - {fileID: 420712}
   - {fileID: 461978}
   - {fileID: 401496}
-  - {fileID: 6164591155896498005}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -166,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c05b64cbebaff734fbbe0ebeac554e77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fuel: {fileID: 8052458203761184649, guid: 11f6e3685beb81a45910b03d336826af, type: 3}
 --- !u!135 &1980692708653273928
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -179,6 +181,19 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8213908572270394285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c05b64cbebaff734fbbe0ebeac554e77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fuel: {fileID: 0}
 --- !u!1 &160942
 GameObject:
   m_ObjectHideFlags: 0
@@ -208,7 +223,7 @@ Transform:
   m_LocalScale: {x: 125, y: 125, z: 125}
   m_Children: []
   m_Father: {fileID: 485232}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &13722608
 SkinnedMeshRenderer:
@@ -321,7 +336,7 @@ Transform:
   m_Children:
   - {fileID: 488090}
   m_Father: {fileID: 485232}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7226041972318008903
 GameObject:
@@ -352,7 +367,7 @@ Transform:
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 485232}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1450872353677436346
 SpriteRenderer:

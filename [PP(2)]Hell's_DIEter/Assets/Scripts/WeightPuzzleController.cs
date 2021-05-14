@@ -13,8 +13,7 @@ public class WeightPuzzleController : MonoBehaviour
         get { return goalSlimes; }
         set { goalSlimes = value; }
     }
-    private int goal_turtles = 0;
-    private float timer = 90;
+    private float timer = 120;
     public float Timer
     {
         get { return timer; }
@@ -31,11 +30,11 @@ public class WeightPuzzleController : MonoBehaviour
         {
             case 2:
                 goalSlimes = 2;
-                goal_turtles = 1;
+                timer = 90;
                 break;
             case 3:
-                goalSlimes = 2;
-                goal_turtles = 2;
+                goalSlimes = 3;
+                timer = 90;
                 break;
             default:
                 break;
