@@ -41,23 +41,24 @@ public class StoryController : MonoBehaviour
             switch (index)
             {
                 case 0:
-                    tmPro.text = "행성 탐사에 나섰던 당신";
+                    tmPro.text = "행성 탐사에 나섰던 당신.";
                     break;
                 case 1:
                     tmPro.text = "얼마 지나지 않아 당신은 큰 위험을 마주하게 됩니다.";
                     break;
                 case 2:
-                    tmPro.text = "바로 방사능 폭풍이었죠.";
+                    tmPro.text = "바로 의문의 방사능 폭풍이었죠.";
                     break;
                 case 3:
-                    tmPro.text = "당신은 살아남았지만\n의문의 부작용으로 식욕이 폭발하게 됩니다.";
+                    tmPro.text = "당신은 살아남았지만 심각한 부작용으로\n식욕을 주체할 수 없었습니다.";
                     break;
                 case 4:
-                    tmPro.text = "결국 모든 식량을 먹어치운 당신은 머지않아 굶어 죽었고\n사후세계에 도착해서도 식욕을 참지 못해\n" +
-                        "사후세계의 음식마저 먹어치웠습니다.";
+                    tmPro.text = "결국 모든 식량을 먹어 치운 당신은 머지않아 굶어 죽었고\n" +
+                        "사후세계에 도착해서도 식욕을 참지 못해\n" +
+                        "사후세계의 음식마저 먹어대기 시작했습니다.";
                     break;
                 case 5:
-                    tmPro.text = "사후세계의 일원들은\n당신을 감당할 수 없다 판단했고\n당신을 시험하여 이승으로 돌려보내기로 합니다.";
+                    tmPro.text = "사후세계의 일원들은 당신을 감당할 수 없었고\n당신을 시험하여 이승으로 돌려보내기로 합니다.";
                     break;
                 default:
                     break;

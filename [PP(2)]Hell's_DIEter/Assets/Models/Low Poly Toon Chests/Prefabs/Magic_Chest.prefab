@@ -96,9 +96,10 @@ GameObject:
   - component: {fileID: 9594284}
   - component: {fileID: 8636428264342094307}
   - component: {fileID: 7610261285577964215}
+  - component: {fileID: 1980692708653273928}
   m_Layer: 0
   m_Name: Magic_Chest
-  m_TagString: Untagged
+  m_TagString: Chest
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -112,7 +113,7 @@ Transform:
   m_GameObject: {fileID: 159160}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000016292068}
   m_LocalPosition: {x: -2.4500635, y: -6.7851706, z: -4.925662}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children:
   - {fileID: 420712}
   - {fileID: 461978}
@@ -165,6 +166,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c05b64cbebaff734fbbe0ebeac554e77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!135 &1980692708653273928
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159160}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &160942
 GameObject:
   m_ObjectHideFlags: 0

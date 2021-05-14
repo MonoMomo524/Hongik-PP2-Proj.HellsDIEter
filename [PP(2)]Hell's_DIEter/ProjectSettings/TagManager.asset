@@ -17,6 +17,7 @@ TagManager:
   - PanelRoom
   - Door
   - ScaleRoom
+  - Chest
   layers:
   - Default
   - TransparentFX

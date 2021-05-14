@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-//using Priority_Queue;
+using TMPro;
 
 public class SceneLoader : MonoBehaviour
 {
@@ -40,6 +40,10 @@ public class SceneLoader : MonoBehaviour
 
     private string loadSceneName;
 
+    TextMeshProUGUI tmPro;
+    ArrayList sentences;
+    Queue tips;
+
     public static SceneLoader Create()
     {
         var SceneLoaderPrefab = Resources.Load<SceneLoader>("SceneLoader");
@@ -54,11 +58,18 @@ public class SceneLoader : MonoBehaviour
             return;
         }
 
+        tmPro = this.transform.Find("Tip Text").GetComponent<TextMeshProUGUI>();
+        tips = new Queue();
         DontDestroyOnLoad(gameObject);
     }
 
     public void LoadScene(string sceneName)
     {
+        if (tips.Count == 0)
+            SetTipSentences();
+
+        tmPro.text = tips.Dequeue().ToString();
+
         gameObject.SetActive(true);
         SceneManager.sceneLoaded += LoadSceneEnd;
         loadSceneName = sceneName;
@@ -93,6 +104,7 @@ public class SceneLoader : MonoBehaviour
 
                 if (progressBar.fillAmount == 1.0f)
                 {
+                    yield return new WaitForSeconds(2.0f);
                     op.allowSceneActivation = true;
                     yield break;
                 }
@@ -124,6 +136,29 @@ public class SceneLoader : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+    }
+
+    public void SetTipSentences()
+    {
+        sentences = new ArrayList();
+        tips.Enqueue("TIP. 상호작용은 마우스로 가능합니다!");
+        sentences.Add("TIP. 덤벨과 연료를 많이 모으세요!");
+        sentences.Add("TIP. 열쇠를 찾아 저승 관문을 열고 탈출하세요!");
+        sentences.Add("TIP. 가벼워질수록 민첩하게 움직일 수 있어요!");
+        sentences.Add("TIP. 때로는 증량하는 것도 필요합니다!");
+
+        // 셔플
+        for(int i=0; i<sentences.Count; i++)
+        {
+            int random = Random.Range(i, sentences.Count);
+            var temp = sentences[i];
+            sentences[i] = sentences[random];
+            sentences[random] = temp;
+
+            tips.Enqueue(sentences[i].ToString());
+        }
+
+        sentences.Clear();
     }
 }
 
