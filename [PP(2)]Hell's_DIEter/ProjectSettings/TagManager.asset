@@ -13,10 +13,10 @@ TagManager:
   - Scale
   - Enemy
   - Slime
-  - Turtle
   - FoodRoom
   - PanelRoom
   - Door
+  - ScaleRoom
   layers:
   - Default
   - TransparentFX

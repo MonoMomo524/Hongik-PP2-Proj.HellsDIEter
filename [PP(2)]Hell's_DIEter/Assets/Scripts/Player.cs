@@ -86,6 +86,12 @@ public class Player : MonoBehaviour {
         get { return dumCounts; }
     }
 
+    private int coinCounts = 0;              // 동전 개수
+    public int CoinCounts
+    {
+        get { return coinCounts; }
+    }
+
     private bool isGrabbing = false;        // 몬스터를 잡고있는지
     public bool IsGrabbing
     {
@@ -96,6 +102,9 @@ public class Player : MonoBehaviour {
     private float moveSpeed = 5.0f;     // 캐릭터 이동 속도
     private float rotSpeed = 10.0f;      // 캐릭터 회전 속도
     private float jumpForce = 10.0f;    // 점프 힘
+
+    private bool isWalking;
+    private AudioSource audio;
     #endregion
 
     void Start ()
@@ -109,8 +118,8 @@ public class Player : MonoBehaviour {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         usable = true;
-
-        //EventManager.Instance.AddListener(TUTORIAL_TYPE.MOVEMENTS, OnEvent);
+        isWalking = false;
+        audio = GetComponent<AudioSource>();
 
         originColor = body.materials[1].color;
         
@@ -118,6 +127,18 @@ public class Player : MonoBehaviour {
 
     void Update ()
     {
+        if(isWalking)
+        {
+            if(audio.isPlaying==false)
+            {
+                audio.Play();
+            }
+        }
+        else
+        {
+            audio.Stop();
+        }
+
         // 마우스 On/Off
         if(Input.GetKeyDown(KeyCode.LeftControl) && usable)
         {
@@ -252,19 +273,29 @@ public class Player : MonoBehaviour {
         {
             // 에니매이션 처리
             if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))          // 앞으로, 왼쪽, 오른쪽으로 걷기
+            {
                 anim.SetInteger("WalkParam", 1);
+                isWalking = true;
+            }
 
             else if (Input.GetKey(KeyCode.S))           // 뒤로가기
+            {
                 anim.SetInteger("WalkParam", 2);
+                isWalking = true;
+            }
 
             else // Idle
+            { 
                 anim.SetInteger("WalkParam", 0);
+                isWalking = false;
+            }
 
             anim.SetInteger("JumpParam", 0);
             anim.SetBool("UsingJetpack", false);
 
             if (Input.GetKeyDown(KeyCode.Space)) // 점프
             {
+                isWalking = false;
                 isGrounded = false;
                 anim.SetInteger("JumpParam", 1);
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -272,6 +303,7 @@ public class Player : MonoBehaviour {
         }
         else // 점프 또는 낙하 중
         {
+            isWalking = false;
             anim.SetInteger("WalkParam", 0);
             // 점프 애니메이션 후 연료가 남아있으면 제트팩 사용
             if (Input.GetKey(KeyCode.Space) && fuel > 0.0f &&
