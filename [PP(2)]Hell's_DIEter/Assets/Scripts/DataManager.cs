@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
+using System.IO;    // 폴더 내 저장파일 확인 및 존재확인
 using System;
 
 public class DataManager : MonoBehaviour

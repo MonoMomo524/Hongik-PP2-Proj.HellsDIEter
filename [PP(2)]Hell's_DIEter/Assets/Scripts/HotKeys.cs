@@ -9,6 +9,7 @@ public class HotKeys : MonoBehaviour
 {
     public GameObject dumb;
     public GameObject fuel;
+    public GameObject key;
 
     private void Update()
     {
@@ -38,10 +39,27 @@ public class HotKeys : MonoBehaviour
             GameObject player = GameObject.Find("Player");
             Instantiate(dumb, player.transform.position, Quaternion.identity);
         }
+        // 연료획득
         if (Input.GetKeyDown(KeyCode.Keypad8))
         {
             GameObject player = GameObject.Find("Player");
             Instantiate(fuel, player.transform.position, Quaternion.identity);
+        }
+        // 코인 획득
+        if (Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            Player player = GameObject.Find("Player").GetComponent<Player>();
+            if (player == null)
+                return;
+            player.CoinCounts = 50;
+        }
+        // 코인 획득
+        if (Input.GetKeyDown(KeyCode.Keypad6))
+        {
+            Player player = GameObject.Find("Player").GetComponent<Player>();
+            GameObject obj = Instantiate(key, player.transform.position, Quaternion.identity) as GameObject;
+            obj.GetComponent<Animator>().enabled = false;
+            obj.transform.position = player.transform.position;
         }
     }
 }

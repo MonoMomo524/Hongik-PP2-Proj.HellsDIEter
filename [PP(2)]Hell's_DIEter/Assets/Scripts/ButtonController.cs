@@ -85,6 +85,7 @@ public class ButtonController : MonoBehaviour
     public void QuitGame()
     {
         Debug.Log("Quit Game");
+        PlayerPrefs.DeleteAll();
         Application.Quit();
     }
 
@@ -110,7 +111,6 @@ public class ButtonController : MonoBehaviour
                 }
 
                 //GameData data = GameObject.FindObjectOfType<GameData>()
-                Debug.Log("Audio state: " + item.mute);
             }
         }
     }

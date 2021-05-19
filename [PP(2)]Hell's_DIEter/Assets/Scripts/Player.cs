@@ -14,6 +14,8 @@ public class Player : MonoBehaviour {
     public SkinnedMeshRenderer body;
     private GameObject grab;
 
+    public static Vector3 loadPos;
+
     private bool isJetpackOn = false;       // 제트팩 사용 확인
     public bool IsJetpackOn
     {
@@ -90,6 +92,19 @@ public class Player : MonoBehaviour {
     public int CoinCounts
     {
         get { return coinCounts; }
+        set { coinCounts += value; }
+    }
+
+    private bool hasKey = false;
+    public bool HasKey
+    {
+        get { return hasKey; }
+        set { hasKey = value; }
+    }
+    private bool hasMap;
+    public bool HasMap
+    {
+        get { return hasMap; }
     }
 
     private bool isGrabbing = false;        // 몬스터를 잡고있는지
@@ -109,6 +124,10 @@ public class Player : MonoBehaviour {
 
     void Start ()
     {
+        if (loadPos == null)
+        {
+            loadPos = this.transform.position;
+        }
         cam = Camera.main;
         anim = gameObject.GetComponentInChildren<Animator>();
         rb = gameObject.GetComponentInParent<Rigidbody>();
@@ -119,6 +138,8 @@ public class Player : MonoBehaviour {
         Cursor.lockState = CursorLockMode.None;
         usable = true;
         isWalking = false;
+        hasMap = false;
+        hasKey = false;
         audio = GetComponent<AudioSource>();
 
         originColor = body.materials[1].color;
@@ -127,7 +148,7 @@ public class Player : MonoBehaviour {
 
     void Update ()
     {
-        if(isWalking)
+        if (isWalking)
         {
             if(audio.isPlaying==false)
             {
@@ -371,19 +392,21 @@ public class Player : MonoBehaviour {
             isGrounded = true;
         }
         // B3 - 2 입장
-        if(other.CompareTag("PanelRoom") && PanelPuzzleController.level == 1)
+        if (other.CompareTag("PanelRoom") && PanelPuzzleController.level == 1)
         {
-            GameObject.Find("Canvas").SetActive(false);
-            SceneLoader.Instance.LoadScene("3.PanelPuzzle");
+            loadPos = this.transform.position - Vector3.forward * 2.0f;
+            SceneManager.LoadSceneAsync("3.PanelPuzzle");
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
+        // 바람을 타고 올라감(무거우면....)
         if (other.CompareTag("Wind"))
         {
-            rb.AddForce(Vector3.up * jumpForce * 2.5f, ForceMode.Force);
+            rb.AddForce(Vector3.up * jumpForce * 1.5f, ForceMode.Force);
         }
+        // 음식의 방에 있으면 살이 찜
         else if (other.CompareTag("FoodRoom"))
         {
             weight += Time.deltaTime * 1;
@@ -411,18 +434,33 @@ public class Player : MonoBehaviour {
             Destroy(collision.gameObject);
             maxFuel += 5.0f;
         }
-        // 덤벨 획득 시 감량 하한 체중 재설정
+        // 음식 섭취 시 체중 증가
         else if (collision.gameObject.CompareTag("Food"))
         {
             weight = maxWeight;
             this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             Destroy(collision.gameObject);
         }
+        // 슬라임 접촉 시 데미지
         else if (collision.gameObject.CompareTag("Slime"))
         {
             rb.AddForce(-transform.forward * 1.5f, ForceMode.Impulse);
             hp -= 10;
             StartCoroutine("SetImmortalTimer");
+        }
+        else if(collision.gameObject.CompareTag("Key") && this.hasKey == false)
+        {
+            this.hasKey = true;
+            Destroy(collision.gameObject);
+            UIManger ui = GameObject.Find("UI").GetComponent<UIManger>();
+            ui.ShowKeyIcon(this.hasKey);
+        }
+        else if (collision.gameObject.CompareTag("Map") && this.hasMap==false)
+        {
+            this.hasMap = true;
+            Destroy(collision.gameObject);
+            UIManger ui = GameObject.Find("UI").GetComponent<UIManger>();
+            ui.ShowMapIcon(this.hasMap);
         }
     }
 

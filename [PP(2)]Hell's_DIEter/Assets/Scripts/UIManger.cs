@@ -9,6 +9,8 @@ public class UIManger : MonoBehaviour
 {
     #region Variables
     int stage = 0;
+    GameObject inventory;
+    bool isUsing;
 
     #region Tutorial & Main Stage
     // 스크립트
@@ -57,6 +59,18 @@ public class UIManger : MonoBehaviour
 
     void Start()
     {
+        if (SceneManager.GetActiveScene().buildIndex == 3
+            || SceneManager.GetActiveScene().buildIndex == 5)
+        {
+            isUsing = true;
+            if (playerScript == null)
+                playerScript = GameObject.Find("Player").GetComponent<Player>();
+            inventory = GameObject.Find("UI").transform.Find("Inventory").gameObject;
+            SetInventory();
+        }
+
+        else
+            isUsing = false;
     }
 
     void Update()
@@ -91,6 +105,8 @@ public class UIManger : MonoBehaviour
             {
                 transform.Find("Rocket").gameObject.SetActive(true);
             }
+
+            return;
         }
         else if (stage == 2)
         {
@@ -129,6 +145,7 @@ public class UIManger : MonoBehaviour
                 result.SetActive(true);
         }
 
+        SetInventory();
     }
 
     public void ChanageSettings(string name)
@@ -163,6 +180,8 @@ public class UIManger : MonoBehaviour
         }
         else if(name == "4.WeightScale")
         {
+            if (playerScript == null)
+                playerScript = GameObject.Find("Player").GetComponent<Player>();
             stage = 2;
             weightController = GameObject.Find("Weight Puzzle Stage").GetComponent<WeightPuzzleController>();
             timerText = transform.Find("InfoText").Find("Timer").GetComponent<TextMeshProUGUI>();
@@ -211,7 +230,7 @@ public class UIManger : MonoBehaviour
         // 체중 게이지
         weight = playerScript.Weight;
         WeightSlider.value = (int)weight;
-        weightText.text = weight.ToString() + "/" + playerScript.MaxWeight.ToString() + "Kg";
+        weightText.text = ((int)weight).ToString() + "/" + playerScript.MaxWeight.ToString() + "Kg";
         if (WeightSlider.value <= 0)
             WeightSlider.transform.Find("Fill Area").gameObject.SetActive(false);
         else
@@ -250,6 +269,45 @@ public class UIManger : MonoBehaviour
         else
         {
             avatar.sprite = Avatars[1]; 
+        }
+    }
+
+    public void SetInventory()
+    {
+        if (isUsing == false)
+            return;
+
+        // 코인 개수
+        TextMeshProUGUI tmPro = inventory.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        
+        tmPro.text = "x" + playerScript.CoinCounts.ToString();
+
+        // 덤벨 획득 시 인벤토리에서도 볼 수 있음
+        if (playerScript.DumCounts > 0)
+        {
+            inventory.transform.GetChild(2).gameObject.SetActive(true);
+            tmPro = inventory.transform.GetChild(2).transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            tmPro.text = "x" + playerScript.DumCounts.ToString();
+        }
+
+    }
+
+    public void ShowKeyIcon(bool hasKey)
+    {
+        // 열쇠 획득 시 인벤토리에서도 볼 수 있음
+        if (hasKey== true)
+        {
+            inventory.transform.GetChild(3).gameObject.SetActive(true);
+        }
+    }
+
+    public void ShowMapIcon(bool hasMap)
+    {
+        // 지도 획득 시 인벤토리에서도 볼 수 있음
+        if (hasMap == true)
+        {
+            inventory.transform.GetChild(4).gameObject.SetActive(true);
+            GameObject.Find("Player").transform.GetChild(3).gameObject.SetActive(true);
         }
     }
 }

@@ -143,7 +143,7 @@ public class SceneLoader : MonoBehaviour
         sentences = new ArrayList();
         tips.Enqueue("TIP. 상호작용은 마우스로 가능합니다!");
         sentences.Add("TIP. 덤벨과 연료를 많이 모으세요!");
-        sentences.Add("TIP. 열쇠를 찾아 저승 관문을 열고 탈출하세요!");
+        sentences.Add("TIP. 열쇠를 찾아 저승을 탈출하세요!");
         sentences.Add("TIP. 가벼워질수록 민첩하게 움직일 수 있어요!");
         sentences.Add("TIP. 때로는 증량하는 것도 필요합니다!");
 

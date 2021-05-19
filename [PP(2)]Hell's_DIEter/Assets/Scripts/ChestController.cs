@@ -14,13 +14,20 @@ public class ChestController : MonoBehaviour
     private GameObject nextText;
     private Text sentence;
 
+    private bool isLoading = false;
+    private bool isOpen = false;
+
     private void Start()
     {
+        PlayerPrefs.SetInt("MainChest", 0);
         player = FindObjectOfType<Player>().GetComponent<Player>();
         anim = GetComponent<Animator>();
         sentence = GameObject.Find("UI").transform.Find("Dialogue").GetChild(0).GetComponent<Text>();
         nextText = GameObject.Find("UI").transform.Find("Dialogue").GetChild(1).gameObject;
-        icon = this.transform.GetChild(0).gameObject;
+        if (this.tag == "Ground")
+            icon = this.transform.GetChild(1).gameObject;
+        else
+            icon = this.transform.GetChild(0).gameObject;
     }
 
     private void OnTriggerStay(Collider other)
@@ -51,13 +58,25 @@ public class ChestController : MonoBehaviour
     {
         dialogueGroup.alpha = 1;
         dialogueGroup.blocksRaycasts = true;    // 마우스 이벤트 감지
-        StartCoroutine(GetReward(player.CoinCounts));
+        if (this.name == "Chest")
+            StartCoroutine(GetReward(player.CoinCounts));
+        else
+            StartCoroutine(TurnOnSystem(player.HasKey));
     }
 
     IEnumerator GetReward(int coins)
     {
-        if (coins >= 30)
+        if (isOpen)
+            StopCoroutine("GetReward");
+
+        if (coins >= 100 && isOpen == false)
         {
+            isOpen = true;
+
+            // 안내창 띄우기
+            sentence.text = " ";
+            sentence.text = "상자에서 연료를 얻었다.";
+
             // 상자가 열리는 애니메이션
             anim.SetBool("IsOpen", true);
             yield return new WaitUntil(IsOpen);
@@ -65,14 +84,17 @@ public class ChestController : MonoBehaviour
             // 연료 보상
             Vector3 pos = Vector3.back * 1.5f;
             Instantiate(fuel, this.transform.position + pos, Quaternion.identity);
-        }
-        else
-        {
-            // 안내창 띄우기
-            sentence.text = "100원을 투입하시오...라고 써져 있다.";
-            nextText.SetActive(true);
             yield return null;
         }
+        else if (coins < 100)
+        {
+            // 안내창 띄우기
+            sentence.text = " ";
+            sentence.text = "100원을 투입하시오...라고 써져 있다.";
+            nextText.SetActive(true);
+        }
+
+        yield return null;
     }
 
     private bool IsOpen()
@@ -89,4 +111,29 @@ public class ChestController : MonoBehaviour
     //    dialogueGroup.blocksRaycasts = false;
     //    nextText.SetActive(false);
     //}
+
+    IEnumerator TurnOnSystem(bool hasKey)
+    {
+        if (hasKey==true && isLoading==false)
+        {
+            isLoading = true;
+            sentence.text = " ";
+            sentence.text = "작동한다!";
+
+            // 가동 소리
+
+            // 바람 작동
+            GameObject.Find("B2").transform.Find("Room4").transform.Find("Exit Wind Particle").gameObject.SetActive(true);
+            yield return new WaitForSeconds(3.0f);
+            SceneLoader.Instance.LoadScene("EndingScene");
+        }
+        else
+        {
+            // 안내창 띄우기
+            sentence.text = " ";
+            sentence.text = "작동시킬 뭔가가 필요한 것 같아...";
+            nextText.SetActive(true);
+            yield return null;
+        }
+    }
 }

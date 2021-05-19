@@ -31,6 +31,7 @@ public class Slime : MonoBehaviour, IMonsterFSM
         get { return isGrabbing; }
         set { isGrabbing = value; }
     }
+    private AudioSource audio;
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +43,7 @@ public class Slime : MonoBehaviour, IMonsterFSM
         agent = GetComponent<NavMeshAgent>();
         agent.speed = walkSpeed;
         target = GameObject.Find("Player");
+        audio = GetComponent<AudioSource>();
 
         if(points.Length == 0)
         {
@@ -62,9 +64,12 @@ public class Slime : MonoBehaviour, IMonsterFSM
 
         if (Estate == STATE.CATCHED
             || Estate == STATE.ISOLATED)
+        {
+            audio.Stop();
             return;
+        }
 
-            if (!agent.pathPending && agent.remainingDistance < 0.5f)
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
         //&& Estate == STATE.ROAMING)
         {
             GotoNextPoint();
@@ -86,6 +91,8 @@ public class Slime : MonoBehaviour, IMonsterFSM
 
     public void IRoaming()
     {
+        if (audio.isPlaying == true)
+            audio.Stop();
         anim.SetBool("IsWalking", true);
         anim.SetBool("IsRunning", false);
         anim.speed = 1.0f;
@@ -94,6 +101,8 @@ public class Slime : MonoBehaviour, IMonsterFSM
 
     public void IFlee()
     {
+        if (audio.isPlaying == false)
+            audio.Play();
         anim.SetBool("IsRunning", true);
         anim.SetBool("IsWalking", false);
         anim.speed = 1.5f;

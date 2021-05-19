@@ -22,9 +22,7 @@ public class WeightPuzzleController : MonoBehaviour
     
     void Start()
     {
-        // 체중 퍼즐 스테이지에서는 마우스를 화면 중앙에 고정함
         player = GameObject.Find("Player");
-        //player.GetComponent<Player>().Usable = false;
 
         switch (level)
         {
@@ -39,8 +37,6 @@ public class WeightPuzzleController : MonoBehaviour
             default:
                 break;
         }
-
-        Debug.Log("GOAL: " + goalSlimes);
     }
 
     private void Update()
@@ -59,6 +55,7 @@ public class WeightPuzzleController : MonoBehaviour
         {
             this.transform.Find("Scale").transform.Find("Rocket").gameObject.SetActive(true);
             isClear = true;
+            player.GetComponent<Player>().CoinCounts = 20;
         }
     }
 }

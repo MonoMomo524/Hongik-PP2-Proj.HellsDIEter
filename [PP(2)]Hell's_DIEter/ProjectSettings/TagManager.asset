@@ -18,6 +18,8 @@ TagManager:
   - Door
   - ScaleRoom
   - Chest
+  - Key
+  - Map
   layers:
   - Default
   - TransparentFX
@@ -30,7 +32,7 @@ TagManager:
   - PostProcessing
   - Ground
   - Minimap
-  - 
+  - Walls
   - 
   - 
   - 

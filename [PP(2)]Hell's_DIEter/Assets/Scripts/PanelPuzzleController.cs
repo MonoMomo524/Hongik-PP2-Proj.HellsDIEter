@@ -66,6 +66,10 @@ public class PanelPuzzleController : MonoBehaviour
         // 패널 수 조정
         switch (level)
         {
+            case 1:
+                width = 3;
+                flip = 1;
+                break;
             case 2:
                 width = 4;
                 flip = Random.Range(1, 2);
@@ -96,7 +100,6 @@ public class PanelPuzzleController : MonoBehaviour
         // 게임 오버
         if(lives==0)
         {
-            Debug.Log("GAME OVER");
             GameObject.Find("Canvas").transform.Find("GameResult").gameObject.SetActive(true);
             StartCoroutine(EndGame());
         }
@@ -368,6 +371,6 @@ public class PanelPuzzleController : MonoBehaviour
         }
 
         Debug.Log("END");
-        SceneManager.UnloadSceneAsync(5);
+        SceneManager.LoadScene("2.Main");
     }
 }

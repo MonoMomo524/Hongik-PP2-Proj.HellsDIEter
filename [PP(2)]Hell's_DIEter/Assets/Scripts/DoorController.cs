@@ -7,6 +7,7 @@ public class DoorController : MonoBehaviour
 {
     public CanvasGroup dialogueGroup;
     public int limit;
+    public bool isSpecial;
 
     private Text sentence;
     private GameObject nextText;
@@ -19,18 +20,25 @@ public class DoorController : MonoBehaviour
 
     private void OnDoorwayOpen(float weight)
     {
+        if( (int) weight != limit && isSpecial==true)
+        {
+            ShowDoorInfo(1);
+            return;
+        }
         if ((int)weight > limit)
         {
-            ShowDoorInfo();
+            ShowDoorInfo(0);
             return;
         }
 
-        this.gameObject.SetActive(false);
+        this.GetComponent<MeshRenderer>().enabled = false;
+        this.GetComponent<MeshCollider>().enabled = false;
     }
 
     private void OnDoorwayClose()
     {
-        this.gameObject.SetActive(true);
+        this.GetComponent<MeshRenderer>().enabled = true;
+        this.GetComponent<MeshCollider>().enabled = true;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -49,18 +57,28 @@ public class DoorController : MonoBehaviour
         }
     }
 
-    private void OnMouseDown()
+    private void ShowDoorInfo(int type)
     {
         dialogueGroup.alpha = 1;
         dialogueGroup.blocksRaycasts = true;    // 마우스 이벤트 감지
-        OnDoorwayOpen(GameObject.FindObjectOfType<Player>().Weight);
-    }
 
-    private void ShowDoorInfo()
-    {
-        // 안내창 띄우기
-        sentence.text = "여길 지나가고 싶거든 " + limit + "kg 이하로 감량해라!\n-앙마-\n...라고 쓰여있다.";
-        nextText.SetActive(true);
+        switch (type)
+        {
+            case 0:
+                // 안내창 띄우기
+                sentence.text = " ";
+                sentence.text = "여길 지나가고 싶거든 " + limit + "kg 이하로 감량해라!\n-앙마-\n...라고 쓰여있다.";
+                nextText.SetActive(true);
+                break;
+            case 1:
+                // 안내창 띄우기
+                sentence.text = " ";
+                sentence.text = "여길 지나가고 싶거든 " + limit + "kg이 되어 오너라! !\n-앙마-\n...라고 쓰여있다.";
+                nextText.SetActive(true);
+                break;
+            default:
+                break;
+        }
     }
 
     private void CloseWindow()

@@ -20,6 +20,7 @@ public class TutorialQuest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PlayerPrefs.SetInt("Tutorial", 1);
         player = GameObject.Find("Player").GetComponent<Player>();
         dialogue = GameObject.Find("Devil NPC").GetComponent<NPCDialogue>();
 
@@ -151,5 +152,6 @@ public class TutorialQuest : MonoBehaviour
     {
         if(dialogue.DialogueBubble.activeSelf == false)
             isClear = true;
+        PlayerPrefs.SetInt("TutorialSave", 1);
     }
 }

@@ -100,7 +100,6 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
                 currentIndex = int.Parse(ids.Dequeue());
             else
                 currentIndex = int.Parse(ids.Dequeue()) + lastIndex;
-            Debug.Log(currentIndex);
 
             // 특정 스크립트에선 대화창 모양 변경
             if (currentIndex == 2 || currentIndex == 10 || currentIndex == 13)
