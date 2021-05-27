@@ -53,7 +53,7 @@ public class NPC : MonoBehaviour
             anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.4f)
         {
             isPushing = true;
-            player.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward*5.0f, ForceMode.Impulse);
+            player.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward* 5.0f * Time.deltaTime, ForceMode.Impulse);
             playerScript.Hp = 35;
 
             if (!playerScript.isActiveAndEnabled)
@@ -75,7 +75,7 @@ public class NPC : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             anim.SetBool("Attack", false);
-            player.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * 5.0f, ForceMode.Impulse);
+            player.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * 3.0f * Time.deltaTime, ForceMode.Impulse);
             isPushing = false;
         }
     }

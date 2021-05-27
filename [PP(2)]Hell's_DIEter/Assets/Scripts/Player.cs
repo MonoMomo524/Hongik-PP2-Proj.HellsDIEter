@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour {
 
@@ -38,14 +39,14 @@ public class Player : MonoBehaviour {
     public float MaxFuel
     {
         get { return (int)maxFuel; }
-        set { maxFuel += value; }
+        set { maxFuel = value; }
     }
 
     private float weight = 100;  // 몸무게
     public float Weight
     {
         get { return weight; }
-        set { weight += value; }
+        set { weight = value; }
     }
 
     private int maxWeight = 100;  // 증량 가능 몸무게
@@ -58,7 +59,7 @@ public class Player : MonoBehaviour {
     public int MinWeight
     {
         get { return minWeight; }
-        set { minWeight -= value; }
+        set { minWeight = value; }
     }
 
     private float hp = 100.0f;                // 체력
@@ -86,13 +87,14 @@ public class Player : MonoBehaviour {
     public int DumCounts
     {
         get { return dumCounts; }
+        set { dumCounts = value; }
     }
 
     private int coinCounts = 0;              // 동전 개수
     public int CoinCounts
     {
         get { return coinCounts; }
-        set { coinCounts += value; }
+        set { coinCounts = value; }
     }
 
     private bool hasKey = false;
@@ -105,6 +107,7 @@ public class Player : MonoBehaviour {
     public bool HasMap
     {
         get { return hasMap; }
+        set { hasMap = value; }
     }
 
     private bool isGrabbing = false;        // 몬스터를 잡고있는지
@@ -113,21 +116,29 @@ public class Player : MonoBehaviour {
         get { return isGrabbing; }
     }
 
+    private bool resized = false;
+
     [SerializeField]private bool isGrounded;                 // 지면에 있는지
     private float moveSpeed = 5.0f;     // 캐릭터 이동 속도
     private float rotSpeed = 10.0f;      // 캐릭터 회전 속도
     private float jumpForce = 10.0f;    // 점프 힘
 
     private bool isWalking;
+    private bool isWind = false;
     private AudioSource audio;
+    public AudioClip[] AudioClips;
     #endregion
+
+    private void Awake()
+    {
+        Application.targetFrameRate = 60;
+    }
 
     void Start ()
     {
-        if (loadPos == null)
-        {
-            loadPos = this.transform.position;
-        }
+        if (PlayerPrefs.HasKey("Min") == false)
+            PlayerPrefs.SetInt("Min", minWeight);
+
         cam = Camera.main;
         anim = gameObject.GetComponentInChildren<Animator>();
         rb = gameObject.GetComponentInParent<Rigidbody>();
@@ -138,26 +149,19 @@ public class Player : MonoBehaviour {
         Cursor.lockState = CursorLockMode.None;
         usable = true;
         isWalking = false;
-        hasMap = false;
-        hasKey = false;
         audio = GetComponent<AudioSource>();
 
         originColor = body.materials[1].color;
-        
     }
 
     void Update ()
     {
-        if (isWalking)
+        if (resized == false)
         {
-            if(audio.isPlaying==false)
-            {
-                audio.Play();
-            }
-        }
-        else
-        {
-            audio.Stop();
+            ResizingWeight(weight);
+            UIManger ui = GameObject.Find("UI").GetComponent<UIManger>();
+            ui.ShowMapIcon(this.hasMap);
+            resized = true;
         }
 
         // 마우스 On/Off
@@ -177,7 +181,7 @@ public class Player : MonoBehaviour {
 
         // 체중 감량과 애니메이션
         if (Input.GetMouseButtonDown(1))
-        {
+        { 
             LoosingWeight();
         }
         else if (Input.GetMouseButtonUp(1))
@@ -187,32 +191,50 @@ public class Player : MonoBehaviour {
 
         MoveCharacter();    // 플레이어 이동
 
+        if (isWalking && isGrounded)
+        {
+            audio.clip = AudioClips[0];
+            audio.volume = 0.5f;
+            if (audio.isPlaying == false)
+            {
+                audio.Play();
+            }
+        }
+        else
+        {
+            audio.Stop();
+        }
+
         // 잡기
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
-            Debug.DrawRay(transform.position, transform.forward * 10.0f, Color.blue, 0.3f);
-            if (Physics.Raycast(transform.position, transform.forward, out hit, 10.0f)
-                && hit.transform.CompareTag("Slime"))
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                isGrabbing = !isGrabbing;
 
-                if (isGrabbing)
+                RaycastHit hit;
+                Debug.DrawRay(transform.position, transform.forward * 10.0f, Color.blue, 0.3f);
+                if (Physics.Raycast(transform.position, transform.forward, out hit, 10.0f)
+                    && hit.transform.CompareTag("Slime"))
                 {
-                    grab = hit.transform.gameObject;
-                    if (grab.transform.Find("Body").CompareTag("Slime"))
-                        grab.GetComponent<Slime>().Estate = Slime.STATE.CATCHED;
+                    isGrabbing = !isGrabbing;
 
-                    grab.transform.SetParent(this.gameObject.transform);
+                    if (isGrabbing)
+                    {
+                        grab = hit.transform.gameObject;
+                        if (grab.transform.Find("Body").CompareTag("Slime"))
+                            grab.GetComponent<Slime>().Estate = Slime.STATE.CATCHED;
+
+                        grab.transform.SetParent(this.gameObject.transform);
+                    }
                 }
-            }
-            else if (Physics.Raycast(transform.position, transform.forward, out hit, 10.0f)
-                && hit.transform.CompareTag("Scale")
-                && grab != null)
-            {
-                hit.transform.GetComponent<Scale>().CheckMonster();
-                isGrabbing = false;
-                grab = null;
+                else if (Physics.Raycast(transform.position, transform.forward, out hit, 10.0f)
+                    && hit.transform.CompareTag("Scale")
+                    && grab != null)
+                {
+                    hit.transform.GetComponent<Scale>().CheckMonster();
+                    isGrabbing = false;
+                    grab = null;
+                }
             }
         }
 
@@ -227,6 +249,9 @@ public class Player : MonoBehaviour {
     {
         if (dumCounts != 0)
         {
+            audio.clip = AudioClips[2];
+            audio.volume = 1.0f;
+            audio.Play();
             weight += -dumCounts;
             anim.SetBool("DoingExercise", true);
             if (weight < minWeight)
@@ -234,8 +259,6 @@ public class Player : MonoBehaviour {
 
             // 체중에 따라 플레이어 사이즈와 능력치 변경
             ResizingWeight(weight);
-
-            //cam.GetComponent<ThirdPersonCamera>().SetDistance((int)weight);
         }
     }
 
@@ -245,27 +268,27 @@ public class Player : MonoBehaviour {
         {
             case 0:
                 this.gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                moveSpeed = 10.0f;
+                moveSpeed = 11.0f;
                 jumpForce = 17.5f;
                 break;
             case 40:
-                this.gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-                moveSpeed = 9.0f;
+                this.gameObject.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+                moveSpeed = 11.0f;
                 jumpForce = 16.5f;
                 break;
             case 70:
-                this.gameObject.transform.localScale = new Vector3(0.95f, 0.95f, 0.95f);
-                moveSpeed = 7.5f;
+                this.gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
+                moveSpeed = 9.5f;
                 jumpForce = 15.0f;
                 break;
             case 90:
-                this.gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
-                moveSpeed = 6.5f;
+                this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                moveSpeed = 8.5f;
                 jumpForce = 12.5f;
                 break;
             case 100:
-                this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                moveSpeed = 5.0f;
+                this.gameObject.transform.localScale = new Vector3(2f, 2f, 2f);
+                moveSpeed = 7.5f;
                 jumpForce = 10.0f;
                 break;
         }
@@ -276,8 +299,14 @@ public class Player : MonoBehaviour {
         // 플레이어 체력 확인 및 회복
         if (hp > 0 && hp < 100)
         {
-            hp += 1 * Time.deltaTime;
+            hp += 1 * Time.fixedDeltaTime;
         }
+
+        if(fuel > 0.5f && isJetpackOn)
+            rb.AddForce(Vector3.up * jumpForce * 1.5f, ForceMode.Force);   // 제트팩 작동(상승) 부분
+
+        if(isWind)
+            rb.AddForce(Vector3.up * jumpForce * 3.0f, ForceMode.Force);
     }
 
     #region Methods
@@ -316,6 +345,12 @@ public class Player : MonoBehaviour {
 
             if (Input.GetKeyDown(KeyCode.Space)) // 점프
             {
+                if (isGrounded)
+                {
+                    audio.clip = AudioClips[1];
+                    audio.volume = 0.7f;
+                    audio.Play();
+                }
                 isWalking = false;
                 isGrounded = false;
                 anim.SetInteger("JumpParam", 1);
@@ -327,7 +362,7 @@ public class Player : MonoBehaviour {
             isWalking = false;
             anim.SetInteger("WalkParam", 0);
             // 점프 애니메이션 후 연료가 남아있으면 제트팩 사용
-            if (Input.GetKey(KeyCode.Space) && fuel > 0.0f &&
+            if (Input.GetKey(KeyCode.Space) && fuel > 0.5f &&
                 (anim.GetCurrentAnimatorStateInfo(0).IsName("Jump Up") ||
                 anim.GetCurrentAnimatorStateInfo(0).IsName("Float")) &&
                 anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
@@ -362,7 +397,13 @@ public class Player : MonoBehaviour {
                 anim.SetBool("UsingJetpack", true);                         // 제트팩 사용 애니메이션 실행
                 particle.Play();                                            // 불꽃 파티클 실행
                 fuel -= Time.deltaTime * 1.5f;                                     // 연료 사용
-                rb.AddForce(Vector3.up * jumpForce * 1.5f, ForceMode.Force);   // 제트팩 작동(상승) 부분
+                if (fuel < 0f)
+                {
+                    fuel = 0;
+                    isJetpackOn = false;
+                    break;
+                }
+                
                 break;
                 
             case false:
@@ -389,13 +430,79 @@ public class Player : MonoBehaviour {
             anim.SetInteger("JumpParam", 0);    // 점프 에니메이션 OFF
             anim.SetBool("UsingJetpack", false);    // 제트팩 에니메이션 OFF
             isJetpackOn = false;                // 제트팩 사용 중 아님
-            isGrounded = true;
         }
         // B3 - 2 입장
         if (other.CompareTag("PanelRoom") && PanelPuzzleController.level == 1)
         {
-            loadPos = this.transform.position - Vector3.forward * 2.0f;
             SceneManager.LoadSceneAsync("3.PanelPuzzle");
+            PlayerPrefs.SetInt("Dumb", dumCounts);
+            PlayerPrefs.SetInt("Fuel", (int)maxFuel);
+            PlayerPrefs.SetInt("Coin", coinCounts);
+            PlayerPrefs.SetInt("Weight", (int)weight);
+            PlayerPrefs.SetInt("Min", minWeight);
+            if (HasMap == true)
+                PlayerPrefs.SetInt("Map", 1);
+            else
+                PlayerPrefs.SetInt("Map", 0);
+            if (HasKey == true)
+                PlayerPrefs.SetInt("Key", 1);
+            else
+                PlayerPrefs.SetInt("Key", 0);
+        }
+        // B2 - 4 입장
+        else if (other.CompareTag("ScaleRoom") && WeightPuzzleController.wLevel == 1)
+        { 
+            SceneManager.LoadSceneAsync("4.WeightScale");
+            PlayerPrefs.SetInt("Dumb", dumCounts);
+            PlayerPrefs.SetInt("Fuel", (int)maxFuel);
+            PlayerPrefs.SetInt("Coin", (int)coinCounts);
+            PlayerPrefs.SetInt("Weight", (int)weight);
+            PlayerPrefs.SetInt("Min", minWeight);
+            if(HasMap == true)
+                PlayerPrefs.SetInt("Map", 1);
+            else
+                PlayerPrefs.SetInt("Map", 0);
+            if (HasKey == true)
+                PlayerPrefs.SetInt("Key", 1);
+            else
+                PlayerPrefs.SetInt("Key", 0);
+
+        }
+        // B2 - 7 입장
+        else if (other.CompareTag("PanelRoom") && PanelPuzzleController.level == 2)
+        {
+            SceneManager.LoadSceneAsync("3.PanelPuzzle");
+            PlayerPrefs.SetInt("Dumb", dumCounts);
+            PlayerPrefs.SetInt("Fuel", (int)maxFuel);
+            PlayerPrefs.SetInt("Coin", (int)coinCounts);
+            PlayerPrefs.SetInt("Weight", (int)weight);
+            PlayerPrefs.SetInt("Min", minWeight);
+            if (HasMap == true)
+                PlayerPrefs.SetInt("Map", 1);
+            else
+                PlayerPrefs.SetInt("Map", 0);
+            if (HasKey == true)
+                PlayerPrefs.SetInt("Key", 1);
+            else
+                PlayerPrefs.SetInt("Key", 0);
+        }
+        // B3 - 8 입장
+        else if (other.CompareTag("ScaleRoom") && WeightPuzzleController.wLevel == 2)
+        {
+            SceneManager.LoadSceneAsync("4.WeightScale");
+            PlayerPrefs.SetInt("Dumb", dumCounts);
+            PlayerPrefs.SetInt("Fuel", (int)maxFuel);
+            PlayerPrefs.SetInt("Coin", (int)coinCounts);
+            PlayerPrefs.SetInt("Weight", (int)weight);
+            PlayerPrefs.SetInt("Min", minWeight);
+            if (HasMap == true)
+                PlayerPrefs.SetInt("Map", 1);
+            else
+                PlayerPrefs.SetInt("Map", 0);
+            if (HasKey == true)
+                PlayerPrefs.SetInt("Key", 1);
+            else
+                PlayerPrefs.SetInt("Key", 0);
         }
     }
 
@@ -404,7 +511,8 @@ public class Player : MonoBehaviour {
         // 바람을 타고 올라감(무거우면....)
         if (other.CompareTag("Wind"))
         {
-            rb.AddForce(Vector3.up * jumpForce * 1.5f, ForceMode.Force);
+            isGrounded = false;
+            isWind = true;
         }
         // 음식의 방에 있으면 살이 찜
         else if (other.CompareTag("FoodRoom"))
@@ -417,26 +525,52 @@ public class Player : MonoBehaviour {
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Wind"))
+        {
+            isWind = false;
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
+
         // 덤벨 획득 시 감량 하한 체중 재설정
         if(collision.gameObject.CompareTag("Dumbbell"))
         {
+            audio.clip = AudioClips[3];
+            audio.volume = 1.0f;
+            audio.Play();
             dumCounts += 1; // 획득한 덤벨 개수 추가
             minWeight -= 10 * dumCounts;  // 체중 하한 재설정
-            Debug.Log("Minimum weights: " + minWeight + "Kg");
-
+            PlayerPrefs.SetInt("Dumb", dumCounts);
             Destroy(collision.gameObject);
         }
         // 연료 획득 시 연료량 상한 재설정
         else if (collision.gameObject.CompareTag("Fuel"))
         {
+            audio.clip = AudioClips[3];
+            audio.volume = 1.0f;
+            audio.Play();
             Destroy(collision.gameObject);
             maxFuel += 5.0f;
+            if(maxFuel > 11)
+            {
+                maxFuel = 11;
+            }
+            PlayerPrefs.SetInt("Fuel", (int)maxFuel);
         }
         // 음식 섭취 시 체중 증가
         else if (collision.gameObject.CompareTag("Food"))
         {
+            audio.clip = AudioClips[3];
+            audio.volume = 1.0f;
+            audio.Play();
             weight = maxWeight;
             this.gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             Destroy(collision.gameObject);
@@ -444,23 +578,30 @@ public class Player : MonoBehaviour {
         // 슬라임 접촉 시 데미지
         else if (collision.gameObject.CompareTag("Slime"))
         {
-            rb.AddForce(-transform.forward * 1.5f, ForceMode.Impulse);
             hp -= 10;
             StartCoroutine("SetImmortalTimer");
         }
         else if(collision.gameObject.CompareTag("Key") && this.hasKey == false)
         {
+            audio.clip = AudioClips[3];
+            audio.volume = 1.0f;
+            audio.Play();
             this.hasKey = true;
             Destroy(collision.gameObject);
             UIManger ui = GameObject.Find("UI").GetComponent<UIManger>();
             ui.ShowKeyIcon(this.hasKey);
+            PlayerPrefs.SetInt("Key", 1);
         }
         else if (collision.gameObject.CompareTag("Map") && this.hasMap==false)
         {
+            audio.clip = AudioClips[3];
+            audio.volume = 1.0f;
+            audio.Play();
             this.hasMap = true;
             Destroy(collision.gameObject);
             UIManger ui = GameObject.Find("UI").GetComponent<UIManger>();
             ui.ShowMapIcon(this.hasMap);
+            PlayerPrefs.SetInt("Map", 1);
         }
     }
 

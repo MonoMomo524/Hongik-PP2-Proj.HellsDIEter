@@ -20,7 +20,8 @@ public class TutorialQuest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayerPrefs.SetInt("Tutorial", 1);
+        Cursor.visible = true;
+        PlayerPrefs.SetInt("Tutorial", 0);
         player = GameObject.Find("Player").GetComponent<Player>();
         dialogue = GameObject.Find("Devil NPC").GetComponent<NPCDialogue>();
 
@@ -48,7 +49,6 @@ public class TutorialQuest : MonoBehaviour
         checker = CheckUsingJetpack;
         yield return new WaitUntil(IsClear);
 
-        Debug.Log("OKAY!");
         dialogue.DialogueBubble.SetActive(true);
         dialogue.IsClear = true;
 
@@ -64,7 +64,6 @@ public class TutorialQuest : MonoBehaviour
         checker = CheckLosingWeight;
         yield return new WaitUntil(IsClear);
 
-        Debug.Log("OKAY!");
         dialogue.IsClear = true;
         dialogue.DialogueBubble.SetActive(true);
         this.isClear = false;
@@ -77,7 +76,6 @@ public class TutorialQuest : MonoBehaviour
         Instantiate(food);
         yield return new WaitUntil(IsClear);
 
-        Debug.Log("OKAY!");
         dialogue.IsClear = true;
         dialogue.DialogueBubble.SetActive(true);
         this.isClear = false;
@@ -150,8 +148,10 @@ public class TutorialQuest : MonoBehaviour
 
     private void EndTutorial()
     {
-        if(dialogue.DialogueBubble.activeSelf == false)
+        if (dialogue.DialogueBubble.activeSelf == false)
+        {
             isClear = true;
-        PlayerPrefs.SetInt("TutorialSave", 1);
+            PlayerPrefs.SetInt("Tutorial", 1);
+        }
     }
 }

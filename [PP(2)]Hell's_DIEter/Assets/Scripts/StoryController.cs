@@ -14,6 +14,7 @@ public class StoryController : MonoBehaviour
 
     private void Start()
     {
+        Cursor.visible = false;
         index = 0;
         tmPro = transform.parent.gameObject.GetComponentInChildren<TextMeshProUGUI>();
         StartCoroutine(Timer());

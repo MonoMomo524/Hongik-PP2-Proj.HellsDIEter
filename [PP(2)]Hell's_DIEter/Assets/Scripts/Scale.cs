@@ -8,7 +8,7 @@ public class Scale : MonoBehaviour
     public WeightPuzzleController Controller;
     public Transform[] Point = new Transform[3];
     public GameObject Slime;
-    public GameObject Player;
+    public Player Player;
     [SerializeField]private GameObject slime;
     private bool monster = false;
     private int count;
@@ -19,12 +19,9 @@ public class Scale : MonoBehaviour
         Point[1] = GameObject.Find("ScaleCatchPoint (1)").transform;
         Point[2] = GameObject.Find("ScaleCatchPoint (2)").transform;
 
+        Player = GameObject.Find("Player").GetComponent<Player>();
 
-        //Controller = GameObject.Find("Weight Puzzle Stage").GetComponent<WeightPuzzleController>();
-        if (Controller == null)
-            Debug.LogError("NULL");
-
-            count = 0;
+        count = 0;
         //for (int i = 0; i < Controller.GoalSlimes; i++)
         //{
         //    InstanciatingMonsters(Slime);
@@ -33,19 +30,16 @@ public class Scale : MonoBehaviour
 
     public void CheckMonster()
     {
-        if (monster == false)
-        {
+        if (monster == false || Controller==null)
             return;
-        }
 
         if (Controller.GoalSlimes > 0
-            && Player.GetComponent<Player>().IsGrabbing == true
+            && Player.IsGrabbing == true
             && slime.GetComponent<Slime>().Estate == global::Slime.STATE.CATCHED)
         {
-            Debug.Log(count);
             slime.transform.parent = null;
+            slime.transform.position = Point[count].position;
             slime.GetComponent<Slime>().Estate = global::Slime.STATE.ISOLATED;
-            slime.GetComponent<Slime>().agent.Warp(Point[count].transform.position);
             slime.gameObject.GetComponent<SphereCollider>().enabled = false;
             Controller.GoalSlimes--;
             count++;
@@ -75,7 +69,6 @@ public class Scale : MonoBehaviour
 
         Instantiate(slime, slime.points[0]);
 
-        Debug.Log("DONE");
         return;
     }
 }

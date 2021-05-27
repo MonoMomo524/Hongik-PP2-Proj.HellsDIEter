@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class Panel
 {
@@ -56,7 +57,8 @@ public class PanelPuzzleController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        chance = flip;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         // 패널 딕셔너리 생성
         goalPanels = new List<Panel>();
@@ -69,10 +71,13 @@ public class PanelPuzzleController : MonoBehaviour
             case 1:
                 width = 3;
                 flip = 1;
+                PlayerPrefs.SetInt("Count",0);
+                PlayerPrefs.SetInt("Puzzle", 1);
                 break;
             case 2:
                 width = 4;
-                flip = Random.Range(1, 2);
+                flip = 2;
+                PlayerPrefs.SetInt("Puzzle", 1);
                 break;
             case 3:
                 height = 4;
@@ -82,12 +87,17 @@ public class PanelPuzzleController : MonoBehaviour
                 break;
         }
 
+        chance = flip;
+
         // 패널 생성
-       CreatePanels();
+        CreatePanels();
     }
 
     private void Update()
     {
+        if(clear)
+            return;
+
         // 맞추지 못했다면 목숨-1
         if(chance == 0 && clear == false)
         {
@@ -97,108 +107,67 @@ public class PanelPuzzleController : MonoBehaviour
             StartCoroutine(ResetPanels());
         }
 
-        // 게임 오버
-        if(lives==0)
-        {
-            GameObject.Find("Canvas").transform.Find("GameResult").gameObject.SetActive(true);
-            StartCoroutine(EndGame());
-        }
-        // 게임 클리어
-        else if (clear == true)
-        {
-            GameObject.Find("Rocket").SetActive(true);
-            level++;
-            StartCoroutine(EndGame());
-        }
-
         // 게임 플레이 중
         // 마우스 조작
         if (clear == false && flipable == true && Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Physics.Raycast(ray, out hit);
-
-            if (hit.transform.CompareTag("Panel"))
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                Panel result = myPanels.Find(x => x.PanelObject.name == hit.transform.name);
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Physics.Raycast(ray, out hit);
 
-                FlipPanel(myPanels, result.Number);
-                selected = true;
+                if (hit.transform.CompareTag("Panel"))
+                {
+                    if (hit.transform.parent.name == "GoalPanel")
+                        return;
+                    Panel result = myPanels.Find(x => x.PanelObject.name == hit.transform.name);
+
+                    chance--;
+                    inputs.Add(int.Parse(result.PanelObject.name));
+                    FlipPanel(myPanels, int.Parse(result.PanelObject.name));
+                    result.PanelObject.GetComponent<AudioSource>().Play();
+                    selected = true;
+
+                }
             }
         }
-        //키보드 조작
-        if (clear == false && flipable == true)
-        {
-            if (Input.GetKeyDown(KeyCode.Keypad1))
-            {
-                chance--;
-                inputs.Add(6);
-                FlipPanel(myPanels, 6);
-                selected = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.Keypad2))
-            {
-                chance--;
-                inputs.Add(7);
-                FlipPanel(myPanels, 7);
-                selected = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.Keypad3))
-            {
-                chance--;
-                inputs.Add(8);
-                FlipPanel(myPanels, 8);
-                selected = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.Keypad4))
-            {
-                chance--;
-                inputs.Add(3);
-                FlipPanel(myPanels, 3);
-                selected = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.Keypad5))
-            {
-                chance--;
-                inputs.Add(4);
-                FlipPanel(myPanels, 4);
-                selected = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.Keypad6))
-            {
-                chance--;
-                inputs.Add(5);
-                FlipPanel(myPanels, 5);
-                selected = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.Keypad7))
-            {
-                chance--;
-                inputs.Add(0);
-                FlipPanel(myPanels, 0);
-                selected = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.Keypad8))
-            {
-                chance--;
-                inputs.Add(1);
-                FlipPanel(myPanels, 1);
-                selected = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.Keypad9))
-            {
-                chance--;
-                inputs.Add(2);
-                FlipPanel(myPanels, 2);
-                selected = true;
-            }
-        }
+        
         // 맞는지 확인
         if (selected)
         {
             clear = ComparePanels();
             selected = false;
+        }
+
+        // 게임 클리어
+         if (clear == true)
+        {
+            GameObject.Find("UI").transform.Find("GameResult").gameObject.SetActive(true);
+            GameObject.Find("UI").transform.Find("GameResult").transform.GetChild(2).gameObject.SetActive(true);
+            switch (level)
+            {
+                case 1:
+                    PlayerPrefs.SetInt("Count", PlayerPrefs.GetInt("Count") + 1);   // 트리거 작동 해제
+                    PlayerPrefs.SetInt("Coin", PlayerPrefs.GetInt("Coin") + 50);    // 코인 획득
+                    break;
+                case 2:
+                    PlayerPrefs.SetInt("Count", PlayerPrefs.GetInt("Count") + 1);   // 트리거 작동 해제
+                    PlayerPrefs.SetInt("Coin", PlayerPrefs.GetInt("Coin") + 100);    // 코인 획득
+                    break;
+                default:
+                    break;
+            }
+            level++;
+            StartCoroutine(EndGame());
+            return;
+        }
+        // 게임 오버
+        else if (lives == 0 && clear == false)
+        {
+            GameObject.Find("UI").transform.Find("GameResult").gameObject.SetActive(true);
+            GameObject.Find("UI").transform.Find("GameResult").transform.GetChild(1).gameObject.SetActive(true);
+            StartCoroutine(EndGame());
         }
     }
 
@@ -220,12 +189,13 @@ public class PanelPuzzleController : MonoBehaviour
 
             // 목표 패널과 플레이어 패널의 자식 객체로 인스턴스 생성
             GameObject instance = (GameObject)Instantiate(newPanel.PanelObject, GoalParent);
+            instance.name = i.ToString();
             newPanel.PanelObject = instance;
             goalPanels.Add(newPanel);    // 목표 패널에 자식 객체로 추가
 
             //  패널의 위치와 회전 조정
-            int yPos = (i / height) * -6;
             int xPos = (i % width) * -6;
+            int yPos = (int)(i / width) * -6;
             newPanel.PanelObject.transform.localPosition = new Vector3(xPos, yPos, 0.0f);   // 패널 위치 설정
 
             // 패널의 번호 설정과 색상 적용
@@ -246,6 +216,7 @@ public class PanelPuzzleController : MonoBehaviour
             SetColor(mPanel);     // 색상 적용
 
             instance = (GameObject)Instantiate(mPanel.PanelObject, MyParent);
+            instance.name = i.ToString();
             mPanel.PanelObject = instance;
             myPanels.Add(mPanel);      // 플레이어 패널에 자식 개체로 추가
         }
@@ -265,7 +236,7 @@ public class PanelPuzzleController : MonoBehaviour
         }
         else
         {
-            // SKY BLUE
+            // BLUE
             panel.PanelObject.transform.GetComponent<MeshRenderer>().sharedMaterial = materials[1];
             panel.PanelObject.transform.Rotate(new Vector3(0f, 180f, 0f));
         }
@@ -282,7 +253,6 @@ public class PanelPuzzleController : MonoBehaviour
         int i = 0;
         while(i < flip)
         {
-            // 0 ~ 8
             int num = Random.Range(0, width * height);
             if (numbers.Contains<int>(num)==false)
             {
@@ -310,7 +280,7 @@ public class PanelPuzzleController : MonoBehaviour
         {
             for (int w = 0; w < width; w++)
             {
-                puzzle[h, w] = i;
+                puzzle[w, h] = i;
                 if(i==selected)
                 {
                     col = h;
@@ -330,7 +300,7 @@ public class PanelPuzzleController : MonoBehaviour
                 if (row + r < 0 || row + r > width-1)
                     continue;
 
-                int index = puzzle[col + c, row + r];
+                int index = puzzle[row + r, col + c];
                 panels[index].State = !panels[index].State;
                 SetColor(panels[index]);
             }
@@ -363,14 +333,15 @@ public class PanelPuzzleController : MonoBehaviour
 
     IEnumerator EndGame()
     {
+        Time.timeScale = 0f;
         int i = 0;
-        while(i<8)
+        while(i<6)
         {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSecondsRealtime(1.0f);
             i++;
         }
 
-        Debug.Log("END");
+        Time.timeScale = 1f;
         SceneManager.LoadScene("2.Main");
     }
 }

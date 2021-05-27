@@ -52,13 +52,10 @@ public class UIManger : MonoBehaviour
     public GameObject result;
     #endregion
 
-    private void Awake()
-    {
-        ChanageSettings(SceneManager.GetActiveScene().name);
-    }
-
     void Start()
     {
+        ChanageSettings(SceneManager.GetActiveScene().name);
+
         if (SceneManager.GetActiveScene().buildIndex == 3
             || SceneManager.GetActiveScene().buildIndex == 5)
         {
@@ -78,6 +75,13 @@ public class UIManger : MonoBehaviour
         // 게임오버
         if (result.gameObject.activeSelf == true)
             return;
+
+        if (Input.GetKeyDown(KeyCode.Escape) 
+            && (SceneManager.GetActiveScene().buildIndex == 2
+                    || SceneManager.GetActiveScene().buildIndex == 3
+                    || SceneManager.GetActiveScene().buildIndex == 4
+                    || SceneManager.GetActiveScene().buildIndex == 5))
+            this.transform.Find("PauseButton").GetComponent<ButtonController>().MenuPopUp();
 
         if (stage == 1)
         {
@@ -101,7 +105,32 @@ public class UIManger : MonoBehaviour
                 result.SetActive(true);
             }
 
-            if(puzzleController.Clear==true)
+            int count = puzzleController.Chance;
+            switch (count)
+            {
+                case 0:
+                    FlipCounts[0].SetActive(false);
+                    FlipCounts[1].SetActive(false);
+                    FlipCounts[2].SetActive(false);
+                    break;
+                case 1:
+                    FlipCounts[0].SetActive(true);
+                    FlipCounts[1].SetActive(false);
+                    FlipCounts[2].SetActive(false);
+                    break;
+                case 2:
+                    FlipCounts[0].SetActive(true);
+                    FlipCounts[1].SetActive(true);
+                    FlipCounts[2].SetActive(false);
+                    break;
+                case 3:
+                    FlipCounts[0].SetActive(true);
+                    FlipCounts[1].SetActive(true);
+                    FlipCounts[2].SetActive(true);
+                    break;
+            }
+
+            if (puzzleController.Clear==true)
             {
                 transform.Find("Rocket").gameObject.SetActive(true);
             }
@@ -158,6 +187,7 @@ public class UIManger : MonoBehaviour
 
             puzzleController = GameObject.Find("PanelPuzzle").GetComponent<PanelPuzzleController>();
 
+            // 초기 세팅
             FlipCounts[0] = this.transform.Find("Flip Counts").Find("Pizza 1").gameObject;
             FlipCounts[1] = this.transform.Find("Flip Counts").Find("Pizza 2").gameObject;
             FlipCounts[2] = this.transform.Find("Flip Counts").Find("Pizza 3").gameObject;
@@ -166,17 +196,7 @@ public class UIManger : MonoBehaviour
             Lives[1] = this.transform.Find("Hearts").Find("Heart 2").gameObject;
             Lives[2] = this.transform.Find("Hearts").Find("Heart 3").gameObject;
 
-            int count = puzzleController.Chance;
-            switch (count)
-            {
-                case 1:
-                    FlipCounts[1].SetActive(false);
-                    FlipCounts[2].SetActive(false);
-                    break;
-                case 2:
-                    FlipCounts[2].SetActive(false);
-                    break;
-            }
+            return;
         }
         else if(name == "4.WeightScale")
         {
@@ -246,6 +266,7 @@ public class UIManger : MonoBehaviour
             HPSlider.transform.Find("Fill Area").gameObject.SetActive(true);
 
         // 연료 게이지
+        FuelSlider.maxValue = playerScript.MaxFuel;
         fuel = playerScript.Fuel;
         FuelSlider.value = fuel;
         fuel = (int)fuel;

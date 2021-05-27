@@ -23,7 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/4.WeightScale.unity
     guid: ea8f9b2ea6534704bacb14b504a86113
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/LoadingScene.unity
     guid: 9fa89985970148f429f4730b9c953251
   - enabled: 1

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ChestController : MonoBehaviour
@@ -56,12 +57,15 @@ public class ChestController : MonoBehaviour
 
     private void OnMouseDown()
     {
-        dialogueGroup.alpha = 1;
-        dialogueGroup.blocksRaycasts = true;    // 마우스 이벤트 감지
-        if (this.name == "Chest")
-            StartCoroutine(GetReward(player.CoinCounts));
-        else
-            StartCoroutine(TurnOnSystem(player.HasKey));
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            dialogueGroup.alpha = 1;
+            dialogueGroup.blocksRaycasts = true;    // 마우스 이벤트 감지
+            if (this.name == "Chest")
+                StartCoroutine(GetReward(player.CoinCounts));
+            else
+                StartCoroutine(TurnOnSystem(player.HasKey));
+        }
     }
 
     IEnumerator GetReward(int coins)
@@ -69,13 +73,15 @@ public class ChestController : MonoBehaviour
         if (isOpen)
             StopCoroutine("GetReward");
 
-        if (coins >= 100 && isOpen == false)
+        if (coins >= 300 && isOpen == false)
         {
             isOpen = true;
 
+            player.CoinCounts -= 300;
+
             // 안내창 띄우기
             sentence.text = " ";
-            sentence.text = "상자에서 연료를 얻었다.";
+            sentence.text = "상자에서 연료가 나왔다.\n대체 어떻게 넣었던 거야..?\n(획득 시 최대 연료량이 증가합니다)";
 
             // 상자가 열리는 애니메이션
             anim.SetBool("IsOpen", true);
@@ -86,11 +92,11 @@ public class ChestController : MonoBehaviour
             Instantiate(fuel, this.transform.position + pos, Quaternion.identity);
             yield return null;
         }
-        else if (coins < 100)
+        else if (coins < 300)
         {
             // 안내창 띄우기
             sentence.text = " ";
-            sentence.text = "100원을 투입하시오...라고 써져 있다.";
+            sentence.text = "300원을 투입하시오...라고 써져 있다.";
             nextText.SetActive(true);
         }
 
@@ -104,13 +110,6 @@ public class ChestController : MonoBehaviour
             return true;
         else return false;
     }
-
-    //private void CloseWindow()
-    //{
-    //    dialogueGroup.alpha = 0;
-    //    dialogueGroup.blocksRaycasts = false;
-    //    nextText.SetActive(false);
-    //}
 
     IEnumerator TurnOnSystem(bool hasKey)
     {

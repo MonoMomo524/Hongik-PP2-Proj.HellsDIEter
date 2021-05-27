@@ -46,7 +46,6 @@ GameObject:
   - component: {fileID: 4810418454550252084}
   - component: {fileID: 661637901915034897}
   - component: {fileID: 6053456790474905500}
-  - component: {fileID: 9092120145696276505}
   - component: {fileID: 610056244283784692}
   m_Layer: 0
   m_Name: Slime
@@ -104,7 +103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   points: []
   Estate: 0
-  agent: {fileID: 0}
+  destination: {x: 0, y: 0, z: 0}
 --- !u!54 &4810418454550252084
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -147,28 +146,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0.46, z: 0}
---- !u!195 &9092120145696276505
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1090219386143568}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 1
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!82 &610056244283784692
 AudioSource:
   m_ObjectHideFlags: 0
@@ -180,10 +157,10 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 5010adf0b6270fc48aa26619eda6e8b9, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.3
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -225,7 +202,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.763
       inSlope: 0
       outSlope: 0
       tangentMode: 0

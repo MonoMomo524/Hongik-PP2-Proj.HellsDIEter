@@ -17,7 +17,7 @@ public class DialogueManager : MonoBehaviour, IPointerDownHandler
     private string currentSentence;
     private int currentIndex;
 
-    private float typingSpeed = 0.05f;
+    private float typingSpeed = 0.025f;
 
     private bool isTyping;
     public bool IsTyping

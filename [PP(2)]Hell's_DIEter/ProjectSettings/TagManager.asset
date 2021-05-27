@@ -20,6 +20,8 @@ TagManager:
   - Chest
   - Key
   - Map
+  - Inventory
+  - Menu
   layers:
   - Default
   - TransparentFX
@@ -33,7 +35,7 @@ TagManager:
   - Ground
   - Minimap
   - Walls
-  - 
+  - Unwalkable
   - 
   - 
   - 

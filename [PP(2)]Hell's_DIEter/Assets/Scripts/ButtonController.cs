@@ -13,6 +13,12 @@ public class ButtonController : MonoBehaviour
     static bool isPaused = false;
     bool isListening = true;
 
+    private void Start()
+    {
+        if (PlayerPrefs.GetInt("Sound")== 0 && this.tag == "Menu")
+            SoundControll();
+    }
+
     // 인벤토리 창 열기/닫기
     public void Inventory()
     {
@@ -41,10 +47,10 @@ public class ButtonController : MonoBehaviour
     // 메뉴를을 켜고 끄는 메소드
     public void MenuPopUp()
     {
-        isPaused = !isPaused;
+        ButtonController.isPaused = !ButtonController.isPaused;
 
         // 일시정지 및 버튼 스프라이트 변경
-        if (isPaused)
+        if (ButtonController.isPaused)
         {
             Time.timeScale = 0.0f;
             this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_play", typeof(Sprite)) as Sprite;
@@ -56,7 +62,7 @@ public class ButtonController : MonoBehaviour
         }
 
         // 메뉴 팝업 띄우기
-        window = GameObject.Find("Canvas").transform.Find("Menu").gameObject;
+        window = GameObject.Find("UI").transform.Find("Menu").gameObject;
         window.gameObject.SetActive(!window.activeSelf);
         window = null;
     }
@@ -64,10 +70,10 @@ public class ButtonController : MonoBehaviour
     // 도움말을 켜고 끄는 메소드
     public void HelpPopUp()
     {
-        isPaused = !isPaused;
+        ButtonController.isPaused = !ButtonController.isPaused;
 
         // 일시정지
-        if (isPaused)
+        if (ButtonController.isPaused)
         {
             Time.timeScale = 0.0f;
         }
@@ -77,23 +83,30 @@ public class ButtonController : MonoBehaviour
         }
 
         // 메뉴 팝업 띄우기
-        window = GameObject.Find("Canvas").transform.Find("HowTo").gameObject;
+        window = GameObject.Find("UI").transform.Find("HowTo").gameObject;
         window.gameObject.SetActive(!window.activeSelf);
         window = null;
     }
 
     public void QuitGame()
     {
-        Debug.Log("Quit Game");
+        DataManager.Instance.SaveGameData();
+        Debug.Log("Delete All");
         PlayerPrefs.DeleteAll();
         Application.Quit();
+    }
+
+    public void GoTitle()
+    {
+        Time.timeScale = 1.0f;
+        SceneLoader.Instance.LoadScene("0.Title");
     }
 
     public void SoundControll()
     {
         isListening = !isListening;
         AudioSource[] soundObjects = GameObject.FindObjectsOfType<AudioSource>();
-        if(soundObjects != null)
+        if(soundObjects != null && this.transform.name == "SoundButton")
         {
             foreach (var item in soundObjects)
             {
@@ -101,13 +114,15 @@ public class ButtonController : MonoBehaviour
                 if (item.mute == false)
                 {
                     this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_soundOFF", typeof(Sprite)) as Sprite;
-                    this.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "끄기";
+                    this.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "끄기";
+                    PlayerPrefs.SetInt("Sound", 0);
                 }
                     
                 else
                 {
                     this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_soundON", typeof(Sprite)) as Sprite;
-                    this.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "켜기";
+                    this.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "켜기";
+                    PlayerPrefs.SetInt("Sound", 1);
                 }
 
                 //GameData data = GameObject.FindObjectOfType<GameData>()
@@ -121,5 +136,13 @@ public class ButtonController : MonoBehaviour
         string path = SceneUtility.GetScenePathByBuildIndex(index + 1);
         string name = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
         SceneLoader.Instance.LoadScene(name);
+    }
+
+    public void LoadGame()
+    {
+        if ((PlayerPrefs.GetInt("Tutorial") == 0))
+            return;
+        Time.timeScale = 1.0f;
+        SceneLoader.Instance.LoadScene("2.Main");
     }
 }

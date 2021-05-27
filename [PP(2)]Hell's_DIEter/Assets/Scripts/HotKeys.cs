@@ -10,6 +10,7 @@ public class HotKeys : MonoBehaviour
     public GameObject dumb;
     public GameObject fuel;
     public GameObject key;
+    public GameObject bread;
 
     private void Update()
     {
@@ -33,6 +34,9 @@ public class HotKeys : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.F6))
             SceneManager.LoadScene(5);
 
+        else if (Input.GetKeyDown(KeyCode.F7))
+            SceneManager.LoadScene(7);
+
         // 덤벨 획득
         if (Input.GetKeyDown(KeyCode.Keypad7))
         {
@@ -51,14 +55,21 @@ public class HotKeys : MonoBehaviour
             Player player = GameObject.Find("Player").GetComponent<Player>();
             if (player == null)
                 return;
-            player.CoinCounts = 50;
+            player.CoinCounts += 50;
         }
-        // 코인 획득
+        // 열쇠 획득
         if (Input.GetKeyDown(KeyCode.Keypad6))
         {
             Player player = GameObject.Find("Player").GetComponent<Player>();
             GameObject obj = Instantiate(key, player.transform.position, Quaternion.identity) as GameObject;
             obj.GetComponent<Animator>().enabled = false;
+            obj.transform.position = player.transform.position;
+        }
+        // 빵 획득
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            Player player = GameObject.Find("Player").GetComponent<Player>();
+            GameObject obj = Instantiate(bread, player.transform.position, Quaternion.identity) as GameObject;
             obj.transform.position = player.transform.position;
         }
     }
