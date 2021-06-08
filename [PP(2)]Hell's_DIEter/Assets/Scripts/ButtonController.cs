@@ -90,9 +90,7 @@ public class ButtonController : MonoBehaviour
 
     public void QuitGame()
     {
-        DataManager.Instance.SaveGameData();
-        Debug.Log("Delete All");
-        PlayerPrefs.DeleteAll();
+        JsonManager.Instance.Save();
         Application.Quit();
     }
 
