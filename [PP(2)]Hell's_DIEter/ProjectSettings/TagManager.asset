@@ -36,7 +36,11 @@ TagManager:
   - Minimap
   - Walls
   - Unwalkable
+<<<<<<< Updated upstream
   - 
+=======
+  - Obstacles
+>>>>>>> Stashed changes
   - 
   - 
   - 

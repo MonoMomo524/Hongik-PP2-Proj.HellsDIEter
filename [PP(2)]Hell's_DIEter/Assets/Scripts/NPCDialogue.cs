@@ -61,6 +61,10 @@ public class NPCDialogue : MonoBehaviour
             // 대사 스크립트를 저장
             TableIndexDic.Add(table.id, table.sentence);
         }
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     }
 
     // 클릭 이벤트가 감지되면 헤당 레벨에 맞는 범위의 스크립트를 전송

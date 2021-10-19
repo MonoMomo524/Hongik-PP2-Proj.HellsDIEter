@@ -76,6 +76,7 @@ public class Player : MonoBehaviour {
         }
     }
 
+<<<<<<< Updated upstream
     private bool usable;                          // 마우스를 자유롭게 사용 가능한지
     public bool Usable
     {
@@ -83,6 +84,8 @@ public class Player : MonoBehaviour {
         set { usable = value; }
     }
 
+=======
+>>>>>>> Stashed changes
     private int dumCounts = 0;              // 덤벨 개수
     public int DumCounts
     {
@@ -110,12 +113,17 @@ public class Player : MonoBehaviour {
         set { hasMap = value; }
     }
 
+<<<<<<< Updated upstream
     private bool isGrabbing = false;        // 몬스터를 잡고있는지
+=======
+    private bool isGrabbing;        // 몬스터를 잡고있는지
+>>>>>>> Stashed changes
     public bool IsGrabbing
     {
         get { return isGrabbing; }
     }
 
+<<<<<<< Updated upstream
     private bool resized = false;
 
     [SerializeField]private bool isGrounded;                 // 지면에 있는지
@@ -125,6 +133,17 @@ public class Player : MonoBehaviour {
 
     private bool isWalking;
     private bool isWind = false;
+=======
+    private bool resized;
+
+    [SerializeField]private bool isGrounded;                 // 지면에 있는지
+    private float moveSpeed;     // 캐릭터 이동 속도
+    private float rotSpeed;      // 캐릭터 회전 속도
+    private float jumpForce;    // 점프 힘
+
+    private bool isWalking;
+    private bool isWind;
+>>>>>>> Stashed changes
     private AudioSource audio;
     public AudioClip[] AudioClips;
     #endregion
@@ -139,6 +158,7 @@ public class Player : MonoBehaviour {
         if (PlayerPrefs.HasKey("Min") == false)
             PlayerPrefs.SetInt("Min", minWeight);
 
+<<<<<<< Updated upstream
         cam = Camera.main;
         anim = gameObject.GetComponentInChildren<Animator>();
         rb = gameObject.GetComponentInParent<Rigidbody>();
@@ -150,6 +170,28 @@ public class Player : MonoBehaviour {
         usable = true;
         isWalking = false;
         audio = GetComponent<AudioSource>();
+=======
+        // Initialize variables
+        cam = Camera.main;
+        anim = gameObject.GetComponentInChildren<Animator>();
+        anim.SetInteger("WalkParam", 0);
+        rb = gameObject.GetComponentInParent<Rigidbody>();
+        fuel = maxFuel;
+        particle = gameObject.GetComponentInChildren<ParticleSystem>();
+        particle.Stop();
+        audio = GetComponent<AudioSource>();
+
+        // Initialize player variables
+        moveSpeed = 5.0f;     // 캐릭터 이동 속도
+        rotSpeed = 10.0f;      // 캐릭터 회전 속도
+        jumpForce = 10.0f;    // 점프 힘
+
+        // Initialize player states
+        resized = false;
+        isGrabbing = false;
+        isWalking = false;
+        isWind = false;
+>>>>>>> Stashed changes
 
         originColor = body.materials[1].color;
     }
@@ -164,6 +206,7 @@ public class Player : MonoBehaviour {
             resized = true;
         }
 
+<<<<<<< Updated upstream
         // 마우스 On/Off
         if(Input.GetKeyDown(KeyCode.LeftControl) && usable)
         {
@@ -202,6 +245,34 @@ public class Player : MonoBehaviour {
         }
         else
         {
+=======
+        // 체중 감량과 애니메이션
+        if (Input.GetMouseButtonDown(1))
+        { 
+            LoosingWeight();
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            anim.SetBool("DoingExercise", false);
+        }
+
+        if (Cursor.visible == true)
+            return;
+
+        MoveCharacter();    // 플레이어 이동
+
+        if (isWalking && isGrounded)
+        {
+            audio.clip = AudioClips[0];
+            audio.volume = 0.5f;
+            if (audio.isPlaying == false)
+            {
+                audio.Play();
+            }
+        }
+        else
+        {
+>>>>>>> Stashed changes
             audio.Stop();
         }
 
@@ -292,6 +363,7 @@ public class Player : MonoBehaviour {
                 jumpForce = 10.0f;
                 break;
         }
+<<<<<<< Updated upstream
     }
 
     private void FixedUpdate()
@@ -309,6 +381,25 @@ public class Player : MonoBehaviour {
             rb.AddForce(Vector3.up * jumpForce * 3.0f, ForceMode.Force);
     }
 
+=======
+    }
+
+    private void FixedUpdate()
+    {
+        // 플레이어 체력 확인 및 회복
+        if (hp > 0 && hp < 100)
+        {
+            hp += 1 * Time.fixedDeltaTime;
+        }
+
+        if(fuel > 0.5f && isJetpackOn)
+            rb.AddForce(Vector3.up * jumpForce * 1.5f, ForceMode.Force);   // 제트팩 작동(상승) 부분
+
+        if(isWind)
+            rb.AddForce(Vector3.up * jumpForce * 3.0f, ForceMode.Force);
+    }
+
+>>>>>>> Stashed changes
     #region Methods
     
 

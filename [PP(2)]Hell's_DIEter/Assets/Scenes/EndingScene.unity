@@ -160,7 +160,11 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
+<<<<<<< Updated upstream
   m_fontAsset: {fileID: 11400000, guid: 43588e01a4cc12b44aa27142e856f6cf, type: 2}
+=======
+  m_fontAsset: {fileID: 0}
+>>>>>>> Stashed changes
   m_sharedMaterial: {fileID: 3016507294588924838, guid: 43588e01a4cc12b44aa27142e856f6cf,
     type: 2}
   m_fontSharedMaterials: []
@@ -329,8 +333,13 @@ MonoBehaviour:
     \uCC38\uC5EC\uD574\uC900\n\t\t\uB3D9\uAC74\uC774 \uD615 \uAC10\uC0AC\uD569\uB2C8\uB2E4.\n\n\uADF8\uB9AC\uACE0
     \uD50C\uB808\uC774 \uD574\uC8FC\uC2E0 \uB2F9\uC2E0\uAED8 \uAC10\uC0AC\uD569\uB2C8\uB2E4."
   m_isRightToLeft: 0
+<<<<<<< Updated upstream
   m_fontAsset: {fileID: 11400000, guid: 43588e01a4cc12b44aa27142e856f6cf, type: 2}
   m_sharedMaterial: {fileID: 3016507294588924838, guid: 43588e01a4cc12b44aa27142e856f6cf,
+=======
+  m_fontAsset: {fileID: 11400000, guid: 13cf97055dc77284da2ebacfa3ae3afa, type: 2}
+  m_sharedMaterial: {fileID: -7691060820708188966, guid: 13cf97055dc77284da2ebacfa3ae3afa,
+>>>>>>> Stashed changes
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -373,7 +382,11 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
+<<<<<<< Updated upstream
   m_firstOverflowCharacterIndex: 137
+=======
+  m_firstOverflowCharacterIndex: 162
+>>>>>>> Stashed changes
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
