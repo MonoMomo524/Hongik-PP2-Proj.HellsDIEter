@@ -4,24 +4,22 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Menu
+  - Inventory
   - Ground
+  - Map
   - Dumbbell
   - Food
-  - Fuel
-  - Panel
   - Wind
-  - Scale
-  - Enemy
+  - Fuel
   - Slime
-  - FoodRoom
-  - PanelRoom
-  - Door
-  - ScaleRoom
-  - Chest
   - Key
-  - Map
-  - Inventory
-  - Menu
+  - PanelRoom
+  - ScaleRoom
+  - FoodRoom
+  - Chest
+  - Door
+  - Scale
   layers:
   - Default
   - TransparentFX
@@ -31,16 +29,12 @@ TagManager:
   - UI
   - 
   - 
-  - PostProcessing
-  - Ground
   - Minimap
-  - Walls
-  - Unwalkable
-<<<<<<< Updated upstream
+  - Icon
   - 
-=======
-  - Obstacles
->>>>>>> Stashed changes
+  - 
+  - 
+  - 
   - 
   - 
   - 

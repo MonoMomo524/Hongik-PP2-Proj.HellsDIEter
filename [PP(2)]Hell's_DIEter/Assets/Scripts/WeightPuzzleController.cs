@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeightPuzzleController : MonoBehaviour
 {
     public static int wLevel = 1;
+    public static bool result = false;
     public GameObject Scale;
     private GameObject player;
     private int goalSlimes = 2;
@@ -30,13 +31,11 @@ public class WeightPuzzleController : MonoBehaviour
             case 1:
                 goalSlimes = 2;
                 timer = 90;
-                PlayerPrefs.SetInt("Puzzle", 0);
                 GameObject.Find("Slime (5)").SetActive(false);
                 break;
             case 2:
                 goalSlimes = 3;
                 timer = 90;
-                PlayerPrefs.SetInt("Puzzle", 0);
                 break;
             default:
                 break;
@@ -77,12 +76,14 @@ public class WeightPuzzleController : MonoBehaviour
             if (WeightPuzzleController.wLevel == 1)
             {
                 PlayerPrefs.SetInt("Coin", PlayerPrefs.GetInt("Coin") + 50);
-                PlayerPrefs.SetInt("Count", PlayerPrefs.GetInt("Count") + 1);
-            }
+                PlayerPrefs.SetInt("SaveData", PlayerPrefs.GetInt("SaveData") + 1);
+                WeightPuzzleController.result = true;
+}
             else
             {
                 PlayerPrefs.SetInt("Coin", PlayerPrefs.GetInt("Coin") + 100);
-                PlayerPrefs.SetInt("Count", PlayerPrefs.GetInt("Count") + 1);
+                PlayerPrefs.SetInt("SaveData", PlayerPrefs.GetInt("SaveData") + 1);
+                WeightPuzzleController.result = true;
             }
 
             WeightPuzzleController.wLevel++;
@@ -92,6 +93,11 @@ public class WeightPuzzleController : MonoBehaviour
 
     IEnumerator EndGame()
     {
+        if (!isClear)
+            StopCoroutine(EndGame());
+        else
+            isClear = false;
+
         GameObject.Find("GameManager").GetComponent<AudioSource>().Stop();
         int i = 0;
         while (i < 6)

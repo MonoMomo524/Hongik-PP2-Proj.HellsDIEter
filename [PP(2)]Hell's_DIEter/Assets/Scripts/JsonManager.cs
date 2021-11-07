@@ -92,48 +92,28 @@ public class JsonManager : MonoBehaviour
         if(PlayerPrefs.HasKey("Sound"))
             jsonContainer.SoundState = PlayerPrefs.GetInt("Sound");
 
-        if (PlayerPrefs.HasKey("Count"))
+        if (PlayerPrefs.HasKey("SaveData"))
         {
-            switch (PlayerPrefs.GetInt("Count"))
-            {
-                case 0:
-                    jsonContainer.isOpen1 = 0;
-                    jsonContainer.isOpen2 = 0;
-                    jsonContainer.isOpen3 = 0;
-                    jsonContainer.isOpen4 = 0;
-                    break;
-                case 1:
-                    jsonContainer.isOpen1 = 1;
-                    jsonContainer.isOpen2 = 0;
-                    jsonContainer.isOpen3 = 0;
-                    jsonContainer.isOpen4 = 0;
-                    break;
-                case 2:
-                    jsonContainer.isOpen1 = 1;
-                    jsonContainer.isOpen2 = 1;
-                    jsonContainer.isOpen3 = 0;
-                    jsonContainer.isOpen4 = 0;
-                    break;
-                case 3:
-                    jsonContainer.isOpen1 = 1;
-                    jsonContainer.isOpen2 = 1;
-                    jsonContainer.isOpen3 = 1;
-                    jsonContainer.isOpen4 = 0;
-                    break;
-                case 4:
-                    jsonContainer.isOpen1 = 1;
-                    jsonContainer.isOpen2 = 1;
-                    jsonContainer.isOpen3 = 1;
-                    jsonContainer.isOpen4 = 1;
-                    break;
-                default:
-                    jsonContainer.isOpen1 = 0;
-                    jsonContainer.isOpen2 = 0;
-                    jsonContainer.isOpen3 = 0;
-                    jsonContainer.isOpen4 = 0;
-                    break;
-            }
-            jsonContainer.isOpen1 = PlayerPrefs.GetInt("Puzzle1");
+            if(!PlayerPrefs.HasKey("Puzzle1"))
+                PlayerPrefs.SetInt("Puzzle1", 0);
+            else
+                jsonContainer.isOpen1 = PlayerPrefs.GetInt("Puzzle1");
+
+            if (!PlayerPrefs.HasKey("Puzzle2"))
+                PlayerPrefs.SetInt("Puzzle2", 0);
+            else
+                jsonContainer.isOpen3 = PlayerPrefs.GetInt("Puzzle2");
+
+
+            if (!PlayerPrefs.HasKey("Scale1"))
+                PlayerPrefs.SetInt("Scale1", 0);
+            else
+                jsonContainer.isOpen2 = PlayerPrefs.GetInt("Scale1");
+
+            if (!PlayerPrefs.HasKey("Scale2"))
+                PlayerPrefs.SetInt("Scale2", 0);
+            else
+                jsonContainer.isOpen4 = PlayerPrefs.GetInt("Scale2");
         }
 
         if (PlayerPrefs.HasKey("Min"))

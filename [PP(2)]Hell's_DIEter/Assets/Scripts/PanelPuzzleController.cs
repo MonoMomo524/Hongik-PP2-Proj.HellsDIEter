@@ -38,6 +38,7 @@ public class PanelPuzzleController : MonoBehaviour
     {
         get { return clear; }
     }
+    public static bool result = false;
     bool flipable = true;
     private int chance;
     public int Chance
@@ -71,13 +72,11 @@ public class PanelPuzzleController : MonoBehaviour
             case 1:
                 width = 3;
                 flip = 1;
-                PlayerPrefs.SetInt("Count",0);
-                PlayerPrefs.SetInt("Puzzle", 1);
+                PlayerPrefs.SetInt("SaveData",0);
                 break;
             case 2:
                 width = 4;
                 flip = 2;
-                PlayerPrefs.SetInt("Puzzle", 1);
                 break;
             case 3:
                 height = 4;
@@ -91,12 +90,41 @@ public class PanelPuzzleController : MonoBehaviour
 
         // 패널 생성
         CreatePanels();
+        PanelPuzzleController.result= false;
     }
 
     private void Update()
     {
-        if(clear)
+        // 게임 클리어
+         if (clear == true)
+        {
+            GameObject.Find("UI").transform.Find("GameResult").gameObject.SetActive(true);
+            GameObject.Find("UI").transform.Find("GameResult").transform.GetChild(2).gameObject.SetActive(true);
+            PanelPuzzleController.result = true;
+            switch (level)
+            {
+                case 1:
+                    PlayerPrefs.SetInt("SaveData", PlayerPrefs.GetInt("SaveData") + 1);   // 트리거 작동 해제
+                    PlayerPrefs.SetInt("Coin", PlayerPrefs.GetInt("Coin") + 50);    // 코인 획득
+                    break;
+                case 2:
+                    PlayerPrefs.SetInt("SaveData", PlayerPrefs.GetInt("SaveData") + 1);   // 트리거 작동 해제
+                    PlayerPrefs.SetInt("Coin", PlayerPrefs.GetInt("Coin") + 100);    // 코인 획득
+                    break;
+                default:
+                    break;
+            }
+            level++;
+            StartCoroutine(EndGame());
             return;
+        }
+        // 게임 오버
+        else if (lives == 0 && clear == false)
+        {
+            GameObject.Find("UI").transform.Find("GameResult").gameObject.SetActive(true);
+            GameObject.Find("UI").transform.Find("GameResult").transform.GetChild(1).gameObject.SetActive(true);
+            StartCoroutine(EndGame());
+        }
 
         // 맞추지 못했다면 목숨-1
         if(chance == 0 && clear == false)
@@ -138,36 +166,6 @@ public class PanelPuzzleController : MonoBehaviour
         {
             clear = ComparePanels();
             selected = false;
-        }
-
-        // 게임 클리어
-         if (clear == true)
-        {
-            GameObject.Find("UI").transform.Find("GameResult").gameObject.SetActive(true);
-            GameObject.Find("UI").transform.Find("GameResult").transform.GetChild(2).gameObject.SetActive(true);
-            switch (level)
-            {
-                case 1:
-                    PlayerPrefs.SetInt("Count", PlayerPrefs.GetInt("Count") + 1);   // 트리거 작동 해제
-                    PlayerPrefs.SetInt("Coin", PlayerPrefs.GetInt("Coin") + 50);    // 코인 획득
-                    break;
-                case 2:
-                    PlayerPrefs.SetInt("Count", PlayerPrefs.GetInt("Count") + 1);   // 트리거 작동 해제
-                    PlayerPrefs.SetInt("Coin", PlayerPrefs.GetInt("Coin") + 100);    // 코인 획득
-                    break;
-                default:
-                    break;
-            }
-            level++;
-            StartCoroutine(EndGame());
-            return;
-        }
-        // 게임 오버
-        else if (lives == 0 && clear == false)
-        {
-            GameObject.Find("UI").transform.Find("GameResult").gameObject.SetActive(true);
-            GameObject.Find("UI").transform.Find("GameResult").transform.GetChild(1).gameObject.SetActive(true);
-            StartCoroutine(EndGame());
         }
     }
 

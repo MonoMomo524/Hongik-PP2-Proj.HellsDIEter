@@ -15,7 +15,7 @@ public class ButtonController : MonoBehaviour
 
     private void Start()
     {
-        if (PlayerPrefs.GetInt("Sound")== 0 && this.tag == "Menu")
+        if (PlayerPrefs.GetInt("Sound") == 0)
             SoundControll();
     }
 
@@ -102,28 +102,33 @@ public class ButtonController : MonoBehaviour
 
     public void SoundControll()
     {
-        isListening = !isListening;
         AudioSource[] soundObjects = GameObject.FindObjectsOfType<AudioSource>();
-        if(soundObjects != null && this.transform.name == "SoundButton")
-        {
-            foreach (var item in soundObjects)
-            {
-                item.mute = !isListening;
-                if (item.mute == false)
-                {
-                    this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_soundOFF", typeof(Sprite)) as Sprite;
-                    this.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "끄기";
-                    PlayerPrefs.SetInt("Sound", 0);
-                }
-                    
-                else
-                {
-                    this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_soundON", typeof(Sprite)) as Sprite;
-                    this.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "켜기";
-                    PlayerPrefs.SetInt("Sound", 1);
-                }
 
-                //GameData data = GameObject.FindObjectOfType<GameData>()
+        if (soundObjects == null)
+            return;
+
+        foreach (var item in soundObjects)
+        {
+            item.mute = isListening;
+            Debug.Log(item.name + ":" + item.mute);
+        }
+
+        if (this.transform.name == "SoundButton")
+        {
+            isListening = !isListening;
+
+            if (isListening == false)
+            {
+                this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_soundOFF", typeof(Sprite)) as Sprite;
+                this.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "꺼짐";
+                PlayerPrefs.SetInt("Sound", 0);
+            }
+
+            else
+            {
+                this.GetComponent<Image>().sprite = Resources.Load("UI/Sprite/Buttons/button_soundON", typeof(Sprite)) as Sprite;
+                this.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "켜짐";
+                PlayerPrefs.SetInt("Sound", 1);
             }
         }
     }

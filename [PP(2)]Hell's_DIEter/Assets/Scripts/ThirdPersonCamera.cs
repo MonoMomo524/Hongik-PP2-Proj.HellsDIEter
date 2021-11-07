@@ -6,25 +6,13 @@ public class ThirdPersonCamera : MonoBehaviour
 {
     private GameObject player;
 
-<<<<<<< Updated upstream
-    private float rotSpeed = 5.0f;
-
-    private float camDistance = 0;      // 리그부터 카메라까지의 거리
-    private float camWidth = -20.0f;    // 가로 거리
-    private float camHeight = 5.0f;     // 세로 거리
-    private float camFix = 3.0f;        // 레이캐스트 후 리그를 향해 올 보정 값(거리)
-
-    Vector3 direction;
-    Vector3 mouseMove;
-    Vector3 stopMouse;
-=======
     float camDistance = 0;      // 리그부터 카메라까지의 거리
     float camWidth = -20.0f;    // 가로 거리
     float camHeight = 5.0f;     // 세로 거리
     float camFix = 3.0f;        // 레이캐스트 후 리그를 향해 올 보정 값(거리)
     float distance = 20f;
-    float minZoom = 10.0f;       //줌 인했을 대 최소 거리
-    float maxZoom = 30.0f; // 줌아웃했을 때 최대 거리
+    float minZoom = 7.0f;       //줌 인했을 대 최소 거리
+    float maxZoom = 20.0f; // 줌아웃했을 때 최대 거리
     float sensitivity = 100f; // 마우스 감도
     float zoomSpeed = 7f; // 마우스 감도
     Vector3 direction;
@@ -36,63 +24,31 @@ public class ThirdPersonCamera : MonoBehaviour
     GameObject transparentObj;  // 반투명화 될 오브젝트
     Renderer ObstacleRenderer;  // 오브젝트를 반투명하게 만들어주는 렌더러
     List<GameObject> Obstacles; // 반투명화 된 장애물 리스트
->>>>>>> Stashed changes
 
-    private void Start()
+    private void Awake()
     {
         // 마우스 상태 설정
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+    }
 
+    private void Start()
+    {
         // 플레이어 태그를 가진 게임오브젝트(=플레이어)를 찾아서 넣기
         player = GameObject.FindObjectOfType<Player>().gameObject;
         Obstacles = new List<GameObject>(); // 새 리스트 생성
 
-        // 기준점으로부터 카메라까지의 길이
+        // 카메라 리그부터 카메라까지의 거리
         camDistance = Mathf.Sqrt(camWidth * camWidth + camHeight * camHeight);
 
-        // 기준점으로부터 카메라 위치까지의 방향
+        // 카메라 리그부터 카메라 위치까지의 방향벡터
         direction = new Vector3(0, camHeight, camWidth).normalized;
 
-        // 마우스 현재 위치 감지
-        stopMouse = Input.mousePosition;
+        RotateAround();
     }
 
     private void Update()
     {
-<<<<<<< Updated upstream
-        ////y축 기준 회전
-        //transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * rotSpeed, Space.World);
-        ////x축 기준 회전
-        //transform.Rotate(Vector3.left * Input.GetAxis("Mouse Y") * Time.deltaTime * rotSpeed, Space.Self);
-
-        //transform.position = player.transform.position;
-        ////레이캐스트할 벡터값
-        //Vector3 ray_target = transform.up * camHeight + transform.forward * camWidth;
-
-        //RaycastHit hitinfo;
-        //Physics.Raycast(transform.position, ray_target, out hitinfo, camDistance);
-
-        //if (hitinfo.point != Vector3.zero)//레이케스트 성공시
-        //{
-        //    //point로 옮긴다.
-        //    this.transform.position = hitinfo.point;
-        //    //카메라 보정
-        //    this.transform.Translate(direction * -1 * camFix);
-        //}
-        //else
-        //{
-        //    //로컬좌표를 0으로 
-        //    this.transform.localPosition = Vector3.zero;
-        //    //카메라위치까지의 방향벡터 * 카메라 최대거리 로 옮긴다.
-        //    this.transform.Translate(direction * camDistance);
-
-        //    //카메라 보정
-        //    this.transform.Translate(direction * -1 * camFix);
-        //}
-
-        LookAround();
-=======
         // 마우스 On/Off
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
@@ -178,7 +134,7 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         // Raycast를 이용하여 플레이어와 카메라 사이에 있는 오브젝트 감지
         // 오브젝트로 감지되지 않으려면 Layer를 Ignor Raycast로 바꿔놓아야 함
-        // Ignore Raycast: Player, Ground, Particles
+        // Ignore Raycast: Player, Terrain, Particles(Steam, DustStorm)
         float distance = Vector3.Distance(transform.position, player.transform.position) - 1;
         Vector3 direction = (player.transform.position - transform.position).normalized;
         RaycastHit[] hits;
@@ -224,10 +180,6 @@ public class ThirdPersonCamera : MonoBehaviour
 
                 transparentObj = hits[i].collider.gameObject;
 
-                // 장애물 레이어가 없다면 다음 오브젝트 검사
-                if (transparentObj.layer != 13)
-                    continue;
-
                 // 이미 저장된 오브젝트이면 다음 오브젝트 검사
                 if (Obstacles != null && Obstacles.Contains(transparentObj))
                     continue;
@@ -250,19 +202,17 @@ public class ThirdPersonCamera : MonoBehaviour
                 }
             }
         }
->>>>>>> Stashed changes
     }
 
     // 기존 투명화한 오브젝트를 원상복구 하는 메소드
     void RestoreMaterial()
     {
-<<<<<<< Updated upstream
-        // 카메라 회전 관련
-        transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.fixedDeltaTime * rotSpeed, Space.World);
-        transform.Rotate(Vector3.left * Input.GetAxis("Mouse Y") * Time.fixedDeltaTime * rotSpeed, Space.Self);
-        transform.position = player.transform.position;
+        Material material = ObstacleRenderer.material;
+        Color matColor = material.color;
+        matColor.a = 1f;    // 알파값 1:불투명(원상복구)
+        material.color = matColor;
 
-        transform.Translate(player.transform.position);
+        ObstacleRenderer = null;
     }
 
     public void SetDistance(int weight)
@@ -281,13 +231,5 @@ public class ThirdPersonCamera : MonoBehaviour
                 camHeight = 5.0f;     // 세로 거리
                 break;
         }
-=======
-        Material material = ObstacleRenderer.material;
-        Color matColor = material.color;
-        matColor.a = 1f;    // 알파값 1:불투명(원상복구)
-        material.color = matColor;
-
-        ObstacleRenderer = null;
->>>>>>> Stashed changes
     }
 }
