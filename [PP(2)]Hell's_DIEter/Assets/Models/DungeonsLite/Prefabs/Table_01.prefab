@@ -14,11 +14,7 @@ GameObject:
   - component: {fileID: 5030100257178388136}
   - component: {fileID: 994109350168068183}
   - component: {fileID: 3282502697301116729}
-<<<<<<< Updated upstream
   m_Layer: 0
-=======
-  m_Layer: 13
->>>>>>> Stashed changes
   m_Name: Table_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
