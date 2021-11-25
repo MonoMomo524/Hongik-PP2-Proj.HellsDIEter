@@ -1,5 +1,5 @@
-# ProgramingProject2
-## 홍익대학교 게임제작프로젝트(2)_졸업작품: 헬스다이어터(Hell's DIEter)
+# 헬스 다이어터(Hell's DIEter)
+## 홍익대학교 게임제작프로젝트(2)_졸업작품: 헬스 다이어터(Hell's DIEter)
 > 제작
 > * 기획 / 개발 / 3D 모델링(일부) : 홍익대학교 게임학부 게임소프트웨어전공(공학계) B893248 정해빈
 >   - email : bean9194@naver.com
@@ -63,6 +63,9 @@
 > * Song : 50meru - Deneb
 > * Follow Artist : http://bit.ly/2ZiGvdH
 > * Music promoted by DayDreamSound : https://youtu.be/nLzzDqMFnhE
+
+> [ETC]
+> * Effect Sounds : https://freesound.org/
 
 (2) Fonts
 > * © NEXON MAPLESTORY FONT (BOLD & LIGHT) : http://levelup.nexon.com/font/index.aspx?page=5 
